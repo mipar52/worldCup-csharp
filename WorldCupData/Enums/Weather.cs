@@ -11,6 +11,7 @@ namespace WorldCupData.Enums
         Cloudy, 
         PartlyCloudy, 
         PartlyCloudyNight, 
-        Sunny 
+        Sunny,
+        CloudyNight
     };
 }

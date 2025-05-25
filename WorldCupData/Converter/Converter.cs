@@ -8,17 +8,24 @@ using System.Text;
 using System.Threading.Tasks;
 using WorldCupData.Enums;
 using WorldCupData.Model;
+using WorldCupData.Model.GroupResults;
+using WorldCupData.Model.Results;
 
 namespace WorldCupData.Converter
 {
     public static class Serialize
     {
-        public static string ToJson<T>(this T[] self) where T : class => JsonConvert.SerializeObject(self, Converter.Settings);
+        public static string MatchToJson(this Match[] self) => JsonConvert.SerializeObject(self, Converter.MatchSettings);
+        public static string GroupResultsToJson(this GroupResults[] self) => JsonConvert.SerializeObject(self, Converter.GroupResultsSettings);
+        public static string ResultsToJson(this Results[] self) => JsonConvert.SerializeObject(self, Converter.ResultsSettings);
+        public static string TeamToJson(this Team[] self) => JsonConvert.SerializeObject(self, Converter.TeamSettings);
+
+
     }
 
     public static class Converter
     {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        public static readonly JsonSerializerSettings MatchSettings = new JsonSerializerSettings
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
@@ -34,7 +41,38 @@ namespace WorldCupData.Converter
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
+
+        public static readonly JsonSerializerSettings GroupResultsSettings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+
+        public static readonly JsonSerializerSettings ResultsSettings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+
+        public static readonly JsonSerializerSettings TeamSettings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
     }
+
     public class ParseStringConverter : JsonConverter
     {
         public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
@@ -66,3 +104,4 @@ namespace WorldCupData.Converter
         public static readonly ParseStringConverter Singleton = new ParseStringConverter();
     }
 }
+

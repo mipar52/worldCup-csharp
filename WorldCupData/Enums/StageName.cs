@@ -9,9 +9,12 @@ namespace WorldCupData.Enums
     public enum StageName { 
         Final, 
         FirstStage, 
-        PlayOffForThirdPlace, 
-        QuarterFinals, 
+        PlayOffForThirdPlace,
+        MatchForThirdPlace,
+        QuarterFinals,
+        QuarterFinal,
         RoundOf16, 
-        SemiFinals 
+        SemiFinals,
+        SemiFinal
     };
 }

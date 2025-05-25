@@ -78,9 +78,14 @@ namespace WorldCupData.Model
 
         [JsonProperty("last_score_update_at")]
         public DateTimeOffset? LastScoreUpdateAt { get; set; }
+
+        public override string ToString()
+        {
+            return $"Venue: {Venue}, Location: {Location}, Status: {Status}, Time: {Time}, FifaId: {FifaId}, Weather: {Weather}, Attendance: {Attendance}, Officials: [{string.Join(", ", Officials)}], StageName: {StageName}, HomeTeamCountry: {HomeTeamCountry}, AwayTeamCountry: {AwayTeamCountry}, Datetime: {Datetime}, Winner: {Winner}, WinnerCode: {WinnerCode}, HomeTeam: {HomeTeam}, AwayTeam: {AwayTeam}, HomeTeamEvents: {HomeTeamEvents}, AwayTeamEvents: {AwayTeamEvents}, HomeTeamStatistics: {HomeTeamStatistics}, AwayTeamStatistics: {AwayTeamStatistics}, LastEventUpdateAt: {LastEventUpdateAt}, LastScoreUpdateAt: {LastScoreUpdateAt}";
+        }
     }
     public partial class Match
     {
-        public static Match[] FromJson(string json) => JsonConvert.DeserializeObject<Match[]>(json, WoldCup.Converter.Settings);
+        public static Match[] FromJson(string json) => JsonConvert.DeserializeObject<Match[]>(json, Converter.Converter.MatchSettings);
     }
 }

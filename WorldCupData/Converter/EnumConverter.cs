@@ -228,12 +228,20 @@ namespace WorldCupData.Converter
                     return StageName.FirstStage;
                 case "Play-off for third place":
                     return StageName.PlayOffForThirdPlace;
+                case "Match for third place":
+                    return StageName.MatchForThirdPlace;
                 case "Quarter-finals":
                     return StageName.QuarterFinals;
+                case "Quarter-final":
+                    return StageName.QuarterFinal;
                 case "Round of 16":
                     return StageName.RoundOf16;
                 case "Semi-finals":
                     return StageName.SemiFinals;
+                case "Semi-final":
+                    return StageName.SemiFinal;
+                case "First Stage":
+                    return StageName.FirstStage;
             }
             throw new Exception("Cannot unmarshal type StageName");
         }
@@ -260,11 +268,20 @@ namespace WorldCupData.Converter
                 case StageName.QuarterFinals:
                     serializer.Serialize(writer, "Quarter-finals");
                     return;
+                case StageName.QuarterFinal:
+                    serializer.Serialize(writer, "Quarter-final");
+                    return;
                 case StageName.RoundOf16:
                     serializer.Serialize(writer, "Round of 16");
                     return;
                 case StageName.SemiFinals:
                     serializer.Serialize(writer, "Semi-finals");
+                    return;
+                case StageName.SemiFinal:
+                    serializer.Serialize(writer, "Semi-final");
+                    return;
+                case StageName.MatchForThirdPlace:
+                    serializer.Serialize(writer, "Match for third place");
                     return;
             }
             throw new Exception("Cannot marshal type StageName");
@@ -361,6 +378,8 @@ namespace WorldCupData.Converter
                     return Description.PartlyCloudyNight;
                 case "Sunny":
                     return Description.Sunny;
+                case "Cloudy Night":
+                    return Description.CloudyNight;
             }
             throw new Exception("Cannot unmarshal type Description");
         }
@@ -389,6 +408,9 @@ namespace WorldCupData.Converter
                     return;
                 case Description.Sunny:
                     serializer.Serialize(writer, "Sunny");
+                    return;
+                case Description.CloudyNight:
+                    serializer.Serialize(writer, "Cloudy Night");
                     return;
             }
             throw new Exception("Cannot marshal type Description");
