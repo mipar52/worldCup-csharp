@@ -1,7 +1,6 @@
 ﻿using WorldCupData.Enums;
 using System;
 using System.IO;
-
 namespace WorldCupData.Service
 {
     public class SettingsService
@@ -25,7 +24,7 @@ namespace WorldCupData.Service
             try
             {
                 var language = parts[0];
-                var championship = Enum.Parse<ChampionshipType>(parts[1]);
+                var championship = (ChampionshipType)Enum.Parse(typeof(ChampionshipType), parts[1], true);
                 return (language, championship);
             }
             catch

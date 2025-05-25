@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -9,29 +10,23 @@ namespace WorldCupData.Service
 {
     public class FileService
     {
-        public T LoadJson<T>(string path)
+        public T LoadJson<T>(string relativePath)
         {
-            if (!File.Exists(path))
-                return default;
+            string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+            Debug.WriteLine($"CLASS LIB DEBUG: Loading JSON from: {fullPath}");
 
-            string json = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<T>(json);
+            if (!File.Exists(fullPath))
+                throw new FileNotFoundException("JSON file not found:", fullPath);
+
+            string json = LoadText(fullPath)
+                          ?? throw new InvalidOperationException("Failed to load JSON content from file.");
+            return JsonSerializer.Deserialize<T>(json)
+                   ?? throw new InvalidOperationException("Deserialization returned null.");
         }
 
-        public void SaveJson<T>(string path, T data)
-        {
-            var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(path, json);
-        }
-
-        public string LoadText(string path)
+        public string? LoadText(string path)
         {
             return File.Exists(path) ? File.ReadAllText(path) : null;
-        }
-
-        public void SaveText(string path, string content)
-        {
-            File.WriteAllText(path, content);
         }
     }
 }

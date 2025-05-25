@@ -6,4 +6,48 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Files\worldcup.sfg.io\men\group_results.json" />
+    <None Remove="Files\worldcup.sfg.io\men\matches.json" />
+    <None Remove="Files\worldcup.sfg.io\men\results.json" />
+    <None Remove="Files\worldcup.sfg.io\men\teams.json" />
+    <None Remove="Files\worldcup.sfg.io\women\group_results.json" />
+    <None Remove="Files\worldcup.sfg.io\women\matches.json" />
+    <None Remove="Files\worldcup.sfg.io\women\results.json" />
+    <None Remove="Files\worldcup.sfg.io\women\teams.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.5" />
+    <PackageReference Include="System.Text.Json" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Files\worldcup.sfg.io\men\group_results.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\worldcup.sfg.io\men\matches.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\worldcup.sfg.io\men\results.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\worldcup.sfg.io\men\teams.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\worldcup.sfg.io\women\group_results.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\worldcup.sfg.io\women\matches.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\worldcup.sfg.io\women\results.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\worldcup.sfg.io\women\teams.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WorldCupData.Enum;
+using WorldCupData.Enums;
 using WorldCupData.Model;
+using WorldCupData.Converter;
 
 namespace WorldCupData.Service
 {
@@ -25,21 +27,21 @@ namespace WorldCupData.Service
         {
             string url = $"{GetBaseUrl(type)}/teams/results";
             var json = await _httpClient.GetStringAsync(url);
-            return JsonSerializer.Deserialize<List<TeamResult>>(json);
+            return JsonConvert.DeserializeObject<List<TeamResult>>(json);
         }
 
         public async Task<List<Match>> GetMatchesAsync(ChampionshipType type)
         {
             string url = $"{GetBaseUrl(type)}/matches";
             var json = await _httpClient.GetStringAsync(url);
-            return JsonSerializer.Deserialize<List<Match>>(json);
+            return JsonConvert.DeserializeObject<List<Match>>(json, Converter.Converter.Settings);
         }
 
         public async Task<List<Team>> GetTeamsAsync(ChampionshipType type)
         {
             string url = $"{GetBaseUrl(type)}/teams/results";
             var json = await _httpClient.GetStringAsync(url);
-            return JsonSerializer.Deserialize<List<Team>>(json);
+            return JsonConvert.DeserializeObject<List<Team>>(json);
         }
     }
 }
