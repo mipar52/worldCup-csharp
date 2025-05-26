@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace WorldCupData.Service
 {
     public class FileService
     {
-        public T LoadJson<T>(string relativePath)
+        public T LoadJson<T>(string relativePath, JsonSerializerSettings settings)
         {
             string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
             Debug.WriteLine($"CLASS LIB DEBUG: Loading JSON from: {fullPath}");
@@ -20,7 +21,7 @@ namespace WorldCupData.Service
 
             string json = LoadText(fullPath)
                           ?? throw new InvalidOperationException("Failed to load JSON content from file.");
-            return JsonSerializer.Deserialize<T>(json)
+            return JsonConvert.DeserializeObject<T>(json, settings)
                    ?? throw new InvalidOperationException("Deserialization returned null.");
         }
 

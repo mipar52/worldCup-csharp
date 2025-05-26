@@ -37,11 +37,11 @@ namespace WorldCupData.Service
             {
                 string path = $"Files\\worldcup.sfg.io\\{type.ToString().ToLower()}\\matches.json";
                 Debug.WriteLine($"CLASS LIB DEBUG: Loading matches from: {path}");
-                return _fileService.LoadJson<List<Match>>(path);
+                return _fileService.LoadJson<List<Match>>(path, Converter.Converter.MatchSettings);
             }
         }
 
-        public async Task<List<Match>> GetMatchesByCountryAsync(ChampionshipType type, DataSourceMode mode, String country)
+        public async Task<List<Match>?> GetMatchesByCountryAsync(ChampionshipType type, DataSourceMode mode, String country)
         {
             if (mode == DataSourceMode.Api)
             {
@@ -49,9 +49,10 @@ namespace WorldCupData.Service
             }
             else
             {
-                string path = $"Files\\worldcup.sfg.io\\{type.ToString().ToLower()}\\matches.json";
-                Debug.WriteLine($"CLASS LIB DEBUG: Loading matches from: {path}");
-                return _fileService.LoadJson<List<Match>>(path);
+                Debug.WriteLine($"CLASS LIB DEBUG: Loading matches from file for country {country}");
+                var allMatches = await GetMatchesAsync(type, DataSourceMode.File);
+
+                return allMatches.Where(m => m.AwayTeam.Code == country || m.HomeTeam.Code == country).ToList();
             }
         }
 
@@ -63,7 +64,8 @@ namespace WorldCupData.Service
             }
             else
             {
-                return _fileService.LoadJson<List<Team>>($"worldcup.sfg.io/{type.ToString().ToLower()}/teams.json");
+                string path = $"Files\\worldcup.sfg.io\\{type.ToString().ToLower()}\\teams.json";
+                return _fileService.LoadJson<List<Team>>(path, Converter.Converter.TeamSettings);
             }
         }
 
@@ -75,7 +77,8 @@ namespace WorldCupData.Service
             }
             else
             {
-                return _fileService.LoadJson<List<TeamResult>>($"worldcup.sfg.io/{type.ToString().ToLower()}/results.json");
+                string path = $"Files\\worldcup.sfg.io\\{type.ToString().ToLower()}\\results.json";
+                return _fileService.LoadJson<List<TeamResult>>(path, Converter.Converter.TeamSettings);
             }
         }
 
@@ -87,7 +90,8 @@ namespace WorldCupData.Service
             }
             else
             {
-                return _fileService.LoadJson<List<GroupResults>>($"worldcup.sfg.io/{type.ToString().ToLower()}/group_results.json");
+                string path = $"Files\\worldcup.sfg.io\\{type.ToString().ToLower()}\\group_results.json";
+                return _fileService.LoadJson<List<GroupResults>>(path, Converter.Converter.GroupResultsSettings);
             }
             
         }
