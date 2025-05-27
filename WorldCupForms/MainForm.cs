@@ -83,13 +83,19 @@ namespace WorldCupForms
                 cbFavoriteTeam.Items.Add($"{team.Country} ({team.FifaCode})");
             }
 
-            if (File.Exists("favorite_team.txt"))
+            var favorites = FavoriteService.Load();
+            if (favorites != null)
             {
-                var savedCode = File.ReadAllText("favorite_team.txt");
-                var match = teams.FirstOrDefault(t => t.Code == savedCode);
-                if (match != null)
+                string savedCode = favorites.Value.TeamCode;
+
+                var matchedItem = cbFavoriteTeam.Items
+                    .Cast<string>()
+                    .FirstOrDefault(item => item.EndsWith($"({savedCode})"));
+
+                if (matchedItem != null)
                 {
-                    cbFavoriteTeam.SelectedItem = $"{match.Country} ({match.FifaCode})";
+                    cbFavoriteTeam.SelectedItem = matchedItem;
+                    await LoadFavoritePlayersAsync(savedCode); // This uses FavoriteService.Load() internally
                 }
             }
         }
@@ -160,7 +166,6 @@ namespace WorldCupForms
 
             if (players == null) return;
 
-            // Filter to only those stored as favorites
             var favoritePlayers = players
                 .Where(p => favoritePlayerNames.Value.PlayerNames.Contains(p.Name))
                 .ToList();
