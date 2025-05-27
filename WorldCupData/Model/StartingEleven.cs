@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WorldCupData.Enums;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WorldCupData.Model
 {

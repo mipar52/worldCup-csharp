@@ -12,4 +12,10 @@
     <ProjectReference Include="..\WorldCupData\WorldCupData.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="PlayerCardControl.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
 </Project>

@@ -5,32 +5,44 @@ namespace WorldCupData.Service
 {
     public class SettingsService
     {
-        private const string SettingsFile = "settings.txt";
+        private static readonly string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "settings.txt");
 
-        public void SaveSettings(string language, ChampionshipType championship)
+        public void Save(AppSettings settings)
         {
-            File.WriteAllText(SettingsFile, $"{language}|{championship}");
+            Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
+            File.WriteAllText(FilePath, $"language={settings.Language}\nchampionship={settings.Championship}\ndataMode={settings.DataSourceMode}");
         }
 
-        public (string Language, ChampionshipType Championship) LoadSettings()
+        public AppSettings Load()
         {
-            if (!File.Exists(SettingsFile))
-                return ("en", ChampionshipType.Men);
+            if (!File.Exists(FilePath))
+                return null;
 
-            var parts = File.ReadAllText(SettingsFile).Split('|');
-            if (parts.Length != 2)
-                return ("en", ChampionshipType.Men);
+            var lines = File.ReadAllLines(FilePath);
+            var settings = new AppSettings();
 
-            try
+            foreach (var line in lines)
             {
-                var language = parts[0];
-                var championship = (ChampionshipType)Enum.Parse(typeof(ChampionshipType), parts[1], true);
-                return (language, championship);
+                var parts = line.Split('=');
+                if (parts.Length != 2) continue;
+
+                switch (parts[0])
+                {
+                    case "language":
+                        settings.Language = parts[1];
+                        break;
+                    case "championship":
+                        if (Enum.TryParse(parts[1], out ChampionshipType champ))
+                            settings.Championship = champ;
+                        break;
+                    case "dataMode":
+                        if (Enum.TryParse(parts[1], out DataSourceMode mode))
+                            settings.DataSourceMode = mode;
+                        break;
+                }
             }
-            catch
-            {
-                return ("en", ChampionshipType.Men);
-            }
+
+            return settings;
         }
     }
 }
