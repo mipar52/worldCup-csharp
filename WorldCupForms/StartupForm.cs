@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,13 +15,12 @@ namespace WorldCupForms
 {
     public partial class StartupForm : Form
     {
-        public AppSettings SelectedSettings { get; private set; }
-
         public StartupForm()
         {
             InitializeComponent();
-
+            SetLanguageStrings();
             cbLanguage.Items.AddRange(new string[] { "English", "Croatian" });
+          //  cbLanguage.SelectedIndexChanged += cbLanguage_SelectedIndexChanged;
             cbLanguage.SelectedIndex = 0;
             rbMen.Checked = true;
             rbApi.Checked = true;
@@ -30,28 +30,53 @@ namespace WorldCupForms
 
         }
 
+        private void SetLanguageStrings()
+        {
+            welcomeLabel.Text = LanguageService.SetWelcomeMessage();
+            lblSelectLang.Text = LanguageService.SetApplicationLangugeString();
+            grpChampionship.Text = LanguageService.SetWorldChampionShipPicker();
+            rbMen.Text = LanguageService.SetMenWorldChampion();
+            rbWomen.Text = LanguageService.SetWorldChampionShipPicker();
+            rbApi.Text = LanguageService.ViaApi();
+            rbLocal.Text = LanguageService.Locally();
+            btnConfirm.Text = LanguageService.Confirm();
+            btnCancel.Text = LanguageService.Cancel();
+        }
+
         private void cbLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (cbLanguage.SelectedItem != null)
+            {
+                Debug.WriteLine($"Selected language: {cbLanguage.SelectedItem.ToString()}");
+                string selectedLanguage = cbLanguage.SelectedItem.ToString()!;
+                AppSettings.Language = selectedLanguage == "Croatian" ? "hr" : "en";
+                LanguageService.SetLanguage(AppSettings.Language);
+                // Reload language strings
+                SetLanguageStrings();
+            }
         }
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            string selectedLanguage = cbLanguage.SelectedItem.ToString();
-            ChampionshipType selectedChamp = rbMen.Checked ? ChampionshipType.Men : ChampionshipType.Women;
-            DataSourceMode selectedMode = rbApi.Checked ? DataSourceMode.Api : DataSourceMode.File;
-
-            SelectedSettings = new AppSettings
+            if (cbLanguage.SelectedItem != null) // Ensure SelectedItem is not null
             {
-                Language = selectedLanguage == "Croatian" ? "hr" : "en",
-                Championship = selectedChamp,
-                DataSourceMode = selectedMode
-            };
+                string selectedLanguage = cbLanguage.SelectedItem.ToString()!;
+                ChampionshipType selectedChamp = rbMen.Checked ? ChampionshipType.Men : ChampionshipType.Women;
+                DataSourceMode selectedMode = rbApi.Checked ? DataSourceMode.Api : DataSourceMode.File;
 
-            var settingsService = new SettingsService();
-            settingsService.Save(SelectedSettings);
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+                AppSettings.Language = selectedLanguage == "Croatian" ? "hr" : "en";
+                AppSettings.Championship = selectedChamp;
+                AppSettings.DataSourceMode = selectedMode;
+
+                var settingsService = new SettingsService();
+                settingsService.Save();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Please select a language before confirming.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -66,6 +91,11 @@ namespace WorldCupForms
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }

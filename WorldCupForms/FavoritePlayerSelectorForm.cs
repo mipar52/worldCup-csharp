@@ -23,18 +23,22 @@ namespace WorldCupForms
             _teamCode = code;
             LoadList();
 
-            playerListView.AllowDrop = true;
+            flpAllPlayers.AllowDrop = true;
+            flpAllPlayers.AutoScroll = true;
+            flpAllPlayers.WrapContents = false;
+            flpAllPlayers.FlowDirection = FlowDirection.TopDown;
+
             flpFavoritesOne.AllowDrop = true;
             flpFavoritesTwo.AllowDrop = true;
             flpFavoritesThree.AllowDrop = true;
 
-            playerListView.DragEnter += DragEnterHandler;
+            flpAllPlayers.DragEnter += DragEnterHandler;
             flpFavoritesOne.DragEnter += DragEnterHandler;
             flpFavoritesTwo.DragEnter += DragEnterHandler;
             flpFavoritesThree.DragEnter += DragEnterHandler;
 
 
-            playerListView.DragDrop += DragDropToAllPlayers;
+            flpAllPlayers.DragDrop += DragDropToAllPlayers;
             flpFavoritesOne.DragDrop += DragDropToFavorites;
             flpFavoritesTwo.DragDrop += DragDropToFavorites;
             flpFavoritesThree.DragDrop += DragDropToFavorites;
@@ -57,14 +61,14 @@ namespace WorldCupForms
                 if (flpFavoritesThree.Controls.Contains(card)) flpFavoritesThree.Controls.Remove(card);
 
                 // Add back to ListView only if not already there
-                bool exists = playerListView.Items
-                    .Cast<ListViewItem>()
+                bool exists = flpAllPlayers.Controls
+                    .Cast<PlayerCardControl>()
                     .Any(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
 
                 if (!exists)
                 {
-                    var item = new ListViewItem(card.Player.Name) { Tag = card.Player };
-                    playerListView.Items.Add(item);
+                   // var item = new ListViewItem() { Tag = card.Player };
+                    flpAllPlayers.Controls.Add(card);
                 }
             }
         }
@@ -101,12 +105,12 @@ namespace WorldCupForms
                 card.Height = targetPanel.ClientSize.Height; 
                 targetPanel.Controls.Add(card);
                 // Remove from ListView
-                var itemToRemove = playerListView.Items
-                    .Cast<ListViewItem>()
+                var itemToRemove = flpAllPlayers.Controls
+                    .Cast<PlayerCardControl>()
                     .FirstOrDefault(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
 
                 if (itemToRemove != null)
-                    playerListView.Items.Remove(itemToRemove);
+                    flpAllPlayers.Controls.Remove(card);
             }
         }
 
@@ -131,7 +135,7 @@ namespace WorldCupForms
             string currentTeamCode = _teamCode;
 
             var playerNames = SelectedFavorites.Select(p => p.Name).ToList();
-            FavoriteService.Save(currentTeamCode, playerNames);
+            FavoriteService.Save(AppSettings.Championship, currentTeamCode, playerNames);
 
             DialogResult = DialogResult.OK;
             Close();
@@ -152,32 +156,21 @@ namespace WorldCupForms
 
         private void playerListView_MouseDown(object sender, MouseEventArgs e)
         {
-            if (playerListView.GetItemAt(e.X, e.Y) is ListViewItem item)
-            {
-                if (item.Tag is StartingEleven player &&
-                    _playerControls.TryGetValue(player.Name, out var card))
-                {
-                    DoDragDrop(card, DragDropEffects.Move);
-                }
-            }
+ 
         }
 
         private void LoadList()
         {
-            var imageList = new ImageList();
-            imageList.ImageSize = new Size(120, 100); // Make items wider
-            playerListView.LargeImageList = imageList;
+
 
             foreach (var player in _allPlayers)
             {
-                var item = new ListViewItem(player.Name) { Tag = player, ImageIndex = 0 };
-                playerListView.Items.Add(item);
-
                 var card = new PlayerCardControl(player);
-                card.BackColor = System.Drawing.Color.GreenYellow;
+                card.BackColor = Color.GreenYellow;
                 card.OnPromoteToFavorite += PromoteToFavorite;
                 card.OnDemoteToOther += DemoteToOther;
 
+                flpAllPlayers.Controls.Add(card);
                 _playerControls[player.Name] = card;
             }
 
@@ -207,12 +200,12 @@ namespace WorldCupForms
             }
 
             // Remove player from ListView
-            var itemToRemove = playerListView.Items
+            var itemToRemove = flpAllPlayers.Controls
                 .Cast<ListViewItem>()
                 .FirstOrDefault(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
 
             if (itemToRemove != null)
-                playerListView.Items.Remove(itemToRemove);
+                flpAllPlayers.Controls.Remove(card);
 
             targetPanel.Controls.Add(card);
         }
@@ -223,14 +216,14 @@ namespace WorldCupForms
             RemoveFromAllPanels(card);
 
             // Re-add player to ListView if not already there
-            bool exists = playerListView.Items
+            bool exists = flpAllPlayers.Controls
                 .Cast<ListViewItem>()
                 .Any(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
 
             if (!exists)
             {
                 var item = new ListViewItem(card.Player.Name) { Tag = card.Player };
-                playerListView.Items.Add(item);
+                flpAllPlayers.Controls.Add(card);
             }
         }
 

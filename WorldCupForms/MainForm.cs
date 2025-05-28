@@ -11,26 +11,19 @@ namespace WorldCupForms
     public partial class MainForm : Form
     {
         private readonly DataProvider _dataProvider;
-        private readonly AppSettings currentSettings;
         private readonly DataSourceMode currentMode = DataSourceMode.File;
 
         public MainForm()
         {
             InitializeComponent();
             _dataProvider = new DataProvider();
-            currentSettings = new AppSettings();
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
             var settingsService = new SettingsService();
-            var settings = settingsService.Load();
-            if (settings != null)
-            {
-                currentSettings.Language = settings.Language;
-                currentSettings.Championship = settings.Championship;
-            }
-
+            settingsService.Load();
+ 
             cbFavoriteTeam.SelectedIndexChanged += cbFavoriteTeam_SelectedIndexChanged;
             await LoadTeamsAsync();
         }
@@ -76,14 +69,14 @@ namespace WorldCupForms
 
         private async System.Threading.Tasks.Task LoadTeamsAsync()
         {
-            var teams = await _dataProvider.GetTeamsAsync(currentSettings.Championship, currentMode);
+            var teams = await _dataProvider.GetTeamsAsync(AppSettings.Championship, currentMode);
             cbFavoriteTeam.Items.Clear();
             foreach (var team in teams)
             {
                 cbFavoriteTeam.Items.Add($"{team.Country} ({team.FifaCode})");
             }
 
-            var favorites = FavoriteService.Load();
+            var favorites = FavoriteService.Load(AppSettings.Championship);
             if (favorites != null)
             {
                 string savedCode = favorites.Value.TeamCode;
@@ -115,7 +108,7 @@ namespace WorldCupForms
 
             var fifaCode = selectedText.Substring(selectedText.LastIndexOf('(') + 1).TrimEnd(')');
 
-            var matches = await _dataProvider.GetMatchesByCountryAsync(currentSettings.Championship, currentMode, fifaCode);
+            var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, currentMode, fifaCode);
             var firstMatch = matches.FirstOrDefault();
 
             if (firstMatch == null)
@@ -149,13 +142,13 @@ namespace WorldCupForms
 
         private async System.Threading.Tasks.Task LoadFavoritePlayersAsync(string fifaCode)
         {
-            
-            var favoritePlayerNames = FavoriteService.Load();
+
+            var favoritePlayerNames = FavoriteService.Load(AppSettings.Championship);
 
             if (favoritePlayerNames == null || favoritePlayerNames.Value.PlayerNames.Count == 0)
                 return;
 
-            var matches = await _dataProvider.GetMatchesByCountryAsync(currentSettings.Championship, currentMode, fifaCode);
+            var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, currentMode, fifaCode);
             var firstMatch = matches.FirstOrDefault();
 
             if (firstMatch == null) return;
@@ -175,6 +168,32 @@ namespace WorldCupForms
             foreach (var player in favoritePlayers)
             {
                 flpFavoritePlayers.Controls.Add(new PlayerCardControl(player));
+            }
+        }
+
+        private void btnRanking_Click(object sender, EventArgs e)
+        {
+            var rankingForm = new RankingForm(FavoriteService.Load(AppSettings.Championship).Value.TeamCode);
+            rankingForm.ShowDialog();
+
+        }
+
+        private void resetSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var confirm = MessageBox.Show(
+    "Are you sure you want to reset application settings?\nThe app will restart and show the startup screen.",
+    "Reset Confirmation",
+    MessageBoxButtons.YesNo,
+    MessageBoxIcon.Warning);
+
+            if (confirm == DialogResult.Yes)
+            {
+                var service = new SettingsService();
+                service.Reset();
+
+                // Restart the app to show the startup screen
+                Application.Restart();
+                Environment.Exit(0);
             }
         }
     }

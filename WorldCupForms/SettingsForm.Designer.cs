@@ -36,12 +36,16 @@
             rbMen = new RadioButton();
             rbWomen = new RadioButton();
             cbLanguage = new ComboBox();
+            gbData = new GroupBox();
+            rbApi = new RadioButton();
+            rbLocal = new RadioButton();
             grpChampionship.SuspendLayout();
+            gbData.SuspendLayout();
             SuspendLayout();
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(411, 291);
+            btnCancel.Location = new Point(405, 367);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(134, 43);
             btnCancel.TabIndex = 13;
@@ -51,7 +55,7 @@
             // 
             // btnConfirm
             // 
-            btnConfirm.Location = new Point(205, 291);
+            btnConfirm.Location = new Point(205, 367);
             btnConfirm.Name = "btnConfirm";
             btnConfirm.Size = new Size(134, 43);
             btnConfirm.TabIndex = 12;
@@ -81,7 +85,7 @@
             // 
             grpChampionship.Controls.Add(rbMen);
             grpChampionship.Controls.Add(rbWomen);
-            grpChampionship.Location = new Point(205, 158);
+            grpChampionship.Location = new Point(205, 140);
             grpChampionship.Name = "grpChampionship";
             grpChampionship.Size = new Size(340, 95);
             grpChampionship.TabIndex = 9;
@@ -118,11 +122,46 @@
             cbLanguage.Size = new Size(340, 23);
             cbLanguage.TabIndex = 8;
             // 
+            // gbData
+            // 
+            gbData.Controls.Add(rbApi);
+            gbData.Controls.Add(rbLocal);
+            gbData.Location = new Point(205, 251);
+            gbData.Name = "gbData";
+            gbData.Size = new Size(340, 95);
+            gbData.TabIndex = 14;
+            gbData.TabStop = false;
+            gbData.Text = "Data fetcher";
+            gbData.Enter += groupBox1_Enter;
+            // 
+            // rbApi
+            // 
+            rbApi.AutoSize = true;
+            rbApi.Location = new Point(6, 22);
+            rbApi.Name = "rbApi";
+            rbApi.Size = new Size(161, 19);
+            rbApi.TabIndex = 1;
+            rbApi.TabStop = true;
+            rbApi.Text = "Via API (internet required)";
+            rbApi.UseVisualStyleBackColor = true;
+            // 
+            // rbLocal
+            // 
+            rbLocal.AutoSize = true;
+            rbLocal.Location = new Point(6, 56);
+            rbLocal.Name = "rbLocal";
+            rbLocal.Size = new Size(251, 19);
+            rbLocal.TabIndex = 2;
+            rbLocal.TabStop = true;
+            rbLocal.Text = "Locally (via local files, no internet required)";
+            rbLocal.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(gbData);
             Controls.Add(btnCancel);
             Controls.Add(btnConfirm);
             Controls.Add(label1);
@@ -134,6 +173,8 @@
             Load += SettingsForm_Load;
             grpChampionship.ResumeLayout(false);
             grpChampionship.PerformLayout();
+            gbData.ResumeLayout(false);
+            gbData.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -148,5 +189,8 @@
         private RadioButton rbMen;
         private RadioButton rbWomen;
         private ComboBox cbLanguage;
+        private GroupBox gbData;
+        private RadioButton rbApi;
+        private RadioButton rbLocal;
     }
 }

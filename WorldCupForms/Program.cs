@@ -16,15 +16,13 @@ namespace WorldCupForms
             Application.SetCompatibleTextRenderingDefault(false);
 
             var settingsService = new SettingsService();
-            var settings = settingsService.Load();
+            settingsService.Load();
 
-            if (settings == null)
+            if (!settingsService.WasLoaded)
             {
                 using var startupForm = new StartupForm();
                 if (startupForm.ShowDialog() != DialogResult.OK)
                     return;
-
-                settings = startupForm.SelectedSettings;
             }
 
             Application.Run(new MainForm());

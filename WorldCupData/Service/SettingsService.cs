@@ -6,20 +6,24 @@ namespace WorldCupData.Service
     public class SettingsService
     {
         private static readonly string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "settings.txt");
+        public bool WasLoaded { get; private set; } = false;
 
-        public void Save(AppSettings settings)
+        public void Save()
         {
             Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-            File.WriteAllText(FilePath, $"language={settings.Language}\nchampionship={settings.Championship}\ndataMode={settings.DataSourceMode}");
+            File.WriteAllText(FilePath, $"language={AppSettings.Language}\nchampionship={AppSettings.Championship}\ndataMode={AppSettings.DataSourceMode}");
         }
 
-        public AppSettings Load()
+        public void Load()
         {
             if (!File.Exists(FilePath))
-                return null;
+            {
+                WasLoaded = false;
+                return;
+            }
 
             var lines = File.ReadAllLines(FilePath);
-            var settings = new AppSettings();
+            
 
             foreach (var line in lines)
             {
@@ -29,20 +33,27 @@ namespace WorldCupData.Service
                 switch (parts[0])
                 {
                     case "language":
-                        settings.Language = parts[1];
+                        AppSettings.Language = parts[1];
                         break;
                     case "championship":
                         if (Enum.TryParse(parts[1], out ChampionshipType champ))
-                            settings.Championship = champ;
+                            AppSettings.Championship = champ;
                         break;
                     case "dataMode":
                         if (Enum.TryParse(parts[1], out DataSourceMode mode))
-                            settings.DataSourceMode = mode;
+                            AppSettings.DataSourceMode = mode;
                         break;
                 }
             }
+            WasLoaded = true;
+        }
 
-            return settings;
+        public void Reset()
+        {
+            if (File.Exists(FilePath))
+            {
+                File.Delete(FilePath);
+            }
         }
     }
 }

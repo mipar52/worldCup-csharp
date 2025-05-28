@@ -32,8 +32,8 @@
             rbMen = new RadioButton();
             rbWomen = new RadioButton();
             grpChampionship = new GroupBox();
-            lbLanguage = new Label();
-            label1 = new Label();
+            lblSelectLang = new Label();
+            welcomeLabel = new Label();
             btnConfirm = new Button();
             btnCancel = new Button();
             groupBox1 = new GroupBox();
@@ -85,23 +85,24 @@
             grpChampionship.TabStop = false;
             grpChampionship.Text = "World Championship Picker";
             // 
-            // lbLanguage
+            // lblSelectLang
             // 
-            lbLanguage.AutoSize = true;
-            lbLanguage.Location = new Point(182, 58);
-            lbLanguage.Name = "lbLanguage";
-            lbLanguage.Size = new Size(155, 15);
-            lbLanguage.TabIndex = 4;
-            lbLanguage.Text = "Select application language:";
+            lblSelectLang.AutoSize = true;
+            lblSelectLang.Location = new Point(182, 58);
+            lblSelectLang.Name = "lblSelectLang";
+            lblSelectLang.Size = new Size(155, 15);
+            lblSelectLang.TabIndex = 4;
+            lblSelectLang.Text = "Select application language:";
             // 
-            // label1
+            // welcomeLabel
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(188, 18);
-            label1.Name = "label1";
-            label1.Size = new Size(350, 15);
-            label1.TabIndex = 5;
-            label1.Text = "WELCOME TO THE WORLD CHAMPIONSHIP STATS APPLICATION";
+            welcomeLabel.AutoSize = true;
+            welcomeLabel.Location = new Point(188, 18);
+            welcomeLabel.Name = "welcomeLabel";
+            welcomeLabel.Size = new Size(350, 15);
+            welcomeLabel.TabIndex = 5;
+            welcomeLabel.Text = "WELCOME TO THE WORLD CHAMPIONSHIP STATS APPLICATION";
+            welcomeLabel.Click += label1_Click;
             // 
             // btnConfirm
             // 
@@ -165,8 +166,8 @@
             Controls.Add(groupBox1);
             Controls.Add(btnCancel);
             Controls.Add(btnConfirm);
-            Controls.Add(label1);
-            Controls.Add(lbLanguage);
+            Controls.Add(welcomeLabel);
+            Controls.Add(lblSelectLang);
             Controls.Add(grpChampionship);
             Controls.Add(cbLanguage);
             Name = "StartupForm";
@@ -186,8 +187,8 @@
         private RadioButton rbMen;
         private RadioButton rbWomen;
         private GroupBox grpChampionship;
-        private Label lbLanguage;
-        private Label label1;
+        private Label lblSelectLang;
+        private Label welcomeLabel;
         private Button btnConfirm;
         private Button btnCancel;
         private GroupBox groupBox1;

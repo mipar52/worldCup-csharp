@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -23,10 +24,11 @@ namespace WorldCupForms
         public PlayerCardControl(StartingEleven player)
         {
             InitializeComponent();
+            pbPlayer.Click += (s, e) => ChooseImage();
             this.ContextMenuStrip = contextMenu;
             Player = player;
             UpdateUI(player);
-            SetupDragHandlers(); // 👈 attach drag to all parts
+            SetupDragHandlers();
             this.MouseDown += PlayerCardControl_MouseDown;
         }
 
@@ -36,8 +38,17 @@ namespace WorldCupForms
             lbPlayerNumber.Text = $"#{Player.ShirtNumber}";
             lbPlayerPosition.Text = Player.Position.ToString();
             lbPlayerCaptain.Visible = Player.Captain;
-            string placeholderPath = ImageService.GetPlaceholderImagePath();
-            pbPlayer.Image = Image.FromFile(placeholderPath);
+            pbPlayer.SizeMode = PictureBoxSizeMode.Zoom;
+
+            string? imagePath = ImageService.GetPlayerImagePath(AppSettings.Championship, Player.Name);
+            if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
+            {
+                pbPlayer.Image = Image.FromFile(imagePath);
+            }
+            else
+            {
+                pbPlayer.Image = Image.FromFile(ImageService.GetPlaceholderImagePath(AppSettings.Championship));
+            }
             //pbPlayer.Image = Image.FromFile(ImageService.LoadPlaceholderImage());
             if (lbPlayerCaptain.Visible)
             {
@@ -55,7 +66,23 @@ namespace WorldCupForms
             // Attach to all children (recursively)
             foreach (Control c in this.Controls)
             {
+                if (!(c is PictureBox))
                 c.MouseDown += PlayerCardControl_MouseDown;
+            }
+        }
+
+        private void ChooseImage()
+        {
+            Debug.WriteLine("[FORMS DEBUG] Image pressed");
+            using OpenFileDialog dialog = new OpenFileDialog
+            {
+                Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg"
+            };
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                ImageService.SavePlayerImage(AppSettings.Championship,Player.Name, dialog.FileName);
+                pbPlayer.Image = Image.FromFile(dialog.FileName);
             }
         }
 
@@ -83,8 +110,11 @@ namespace WorldCupForms
 
         private void PlayerCardControl_MouseDown(object sender, MouseEventArgs e)
         {
+
             if (e.Button == MouseButtons.Left)
             {
+                if (pbPlayer.Bounds.Contains(e.Location))
+                    return; // Don't start drag if clicking the image
                 DoDragDrop(this, DragDropEffects.Move);
             }
         }

@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Files\Images\placeholder.jpg" />
-    <None Remove="Files\Images\placeholderSmall.jpg" />
-    <None Remove="Files\Images\placeholderTwo.jpg" />
+    <None Remove="Files\worldcup.sfg.io\men\Images\placeholder.jpg" />
+    <None Remove="Files\worldcup.sfg.io\men\Images\placeholderSmall.jpg" />
+    <None Remove="Files\worldcup.sfg.io\men\Images\placeholderTwo.jpg" />
     <None Remove="Files\worldcup.sfg.io\men\group_results.json" />
     <None Remove="Files\worldcup.sfg.io\men\matches.json" />
     <None Remove="Files\worldcup.sfg.io\men\results.json" />
@@ -54,12 +54,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Files\Images\placeholder.jpg">
+    <EmbeddedResource Include="Files\worldcup.sfg.io\men\Images\placeholder.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Files\Images\placeholderTwo.jpg">
+    <EmbeddedResource Include="Files\worldcup.sfg.io\men\Images\placeholderTwo.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Files\worldcup.sfg.io\women\Images\" />
   </ItemGroup>
 
 </Project>

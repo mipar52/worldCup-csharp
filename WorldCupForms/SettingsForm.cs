@@ -36,14 +36,13 @@ namespace WorldCupForms
         {
             var selectedLanguage = cbLanguage.SelectedItem?.ToString() ?? "English";
             var selectedChamp = rbMen.Checked ? ChampionshipType.Men : ChampionshipType.Women;
+            var selectedDataSource = rbApi.Checked ? DataSourceMode.Api : DataSourceMode.File;
 
-            var newSettings = new AppSettings
-            {
-                Language = selectedLanguage == "Croatian" ? "hr" : "en",
-                Championship = selectedChamp
-            };
+            AppSettings.Language = selectedLanguage == "Croatian" ? "hr" : "en";
+            AppSettings.Championship = selectedChamp;
+            AppSettings.DataSourceMode = selectedDataSource;
 
-            _settingsService.Save(newSettings);
+            _settingsService.Save();
 
             MessageBox.Show("Settings saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.DialogResult = DialogResult.OK;
@@ -73,13 +72,23 @@ namespace WorldCupForms
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            var settings = _settingsService.Load() ?? new AppSettings();
+            _settingsService.Load();
 
-            cbLanguage.SelectedItem = settings.Language == "hr" ? "Croatian" : "English";
-            if (settings.Championship == ChampionshipType.Men)
+            cbLanguage.SelectedItem = AppSettings.Language == "hr" ? "Croatian" : "English";
+            if (AppSettings.Championship == ChampionshipType.Men)
                 rbMen.Checked = true;
             else
                 rbWomen.Checked = true;
+            
+            if (AppSettings.DataSourceMode == DataSourceMode.Api)
+                rbApi.Checked = true;
+            else
+                rbLocal.Checked = true;
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -22,5 +22,8 @@ namespace WorldCupData.Model
 
         [JsonProperty("position")]
         public Position Position { get; set; }
+
+        [JsonIgnore]
+        public string ImagePath {get; set; } = string.Empty;
     }
 }

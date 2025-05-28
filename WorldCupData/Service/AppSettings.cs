@@ -7,11 +7,11 @@ using WorldCupData.Enums;
 
 namespace WorldCupData.Service
 {
-    public class AppSettings
+    public static class AppSettings
     {
-        public string Language { get; set; } = "en";
-        public ChampionshipType Championship { get; set; } = ChampionshipType.Men;
+        public static string Language { get; set; } = "en";
+        public static ChampionshipType Championship { get; set; }
 
-        public DataSourceMode DataSourceMode { get; set; } = DataSourceMode.Api;
+        public static DataSourceMode DataSourceMode { get; set; }
     }
 }

@@ -3,22 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WorldCupData.Enums;
 
 namespace WorldCupData.Service
 {
     public static class FavoriteService
     {
-        private static readonly string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "favorite.txt");
 
-        public static void Save(string teamCode, List<string> playerNames)
+        public static void Save(ChampionshipType type,string teamCode, List<string> playerNames)
         {
+            string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "worldup.sfg.io", type.ToString().ToLower(), "favorite.txt");
             Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
             string content = $"team={teamCode}\nplayers={string.Join(",", playerNames)}";
             File.WriteAllText(FilePath, content);
         }
 
-        public static (string TeamCode, List<string> PlayerNames)? Load()
+        public static (string TeamCode, List<string> PlayerNames)? Load(ChampionshipType type)
         {
+            string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "worldup.sfg.io" ,type.ToString().ToLower(), "favorite.txt");
+
             if (!File.Exists(FilePath))
                 return null;
 

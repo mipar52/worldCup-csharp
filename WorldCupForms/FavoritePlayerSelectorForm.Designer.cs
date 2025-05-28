@@ -20,24 +20,24 @@ namespace WorldCupForms
             btnCancel = new Button();
             flpFavoritesTwo = new FlowLayoutPanel();
             flpFavoritesThree = new FlowLayoutPanel();
-            playerListView = new ListView();
+            flpAllPlayers = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // flpFavoritesOne
             // 
             flpFavoritesOne.BackColor = Color.RosyBrown;
             flpFavoritesOne.BorderStyle = BorderStyle.FixedSingle;
-            flpFavoritesOne.Location = new Point(330, 12);
+            flpFavoritesOne.Location = new Point(476, 12);
             flpFavoritesOne.Name = "flpFavoritesOne";
-            flpFavoritesOne.Size = new Size(349, 146);
+            flpFavoritesOne.Size = new Size(423, 191);
             flpFavoritesOne.TabIndex = 1;
             flpFavoritesOne.MouseDown += flpFavoritesOne_MouseDown;
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(330, 478);
+            btnSave.Location = new Point(476, 586);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(145, 30);
+            btnSave.Size = new Size(178, 30);
             btnSave.TabIndex = 2;
             btnSave.Text = "Save Selection";
             btnSave.UseVisualStyleBackColor = true;
@@ -45,9 +45,9 @@ namespace WorldCupForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(534, 478);
+            btnCancel.Location = new Point(718, 586);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(145, 30);
+            btnCancel.Size = new Size(181, 30);
             btnCancel.TabIndex = 3;
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = true;
@@ -57,33 +57,31 @@ namespace WorldCupForms
             // 
             flpFavoritesTwo.BackColor = Color.RosyBrown;
             flpFavoritesTwo.BorderStyle = BorderStyle.FixedSingle;
-            flpFavoritesTwo.Location = new Point(330, 164);
+            flpFavoritesTwo.Location = new Point(476, 209);
             flpFavoritesTwo.Name = "flpFavoritesTwo";
-            flpFavoritesTwo.Size = new Size(349, 146);
+            flpFavoritesTwo.Size = new Size(423, 177);
             flpFavoritesTwo.TabIndex = 2;
             // 
             // flpFavoritesThree
             // 
             flpFavoritesThree.BackColor = Color.RosyBrown;
             flpFavoritesThree.BorderStyle = BorderStyle.FixedSingle;
-            flpFavoritesThree.Location = new Point(330, 316);
+            flpFavoritesThree.Location = new Point(476, 392);
             flpFavoritesThree.Name = "flpFavoritesThree";
-            flpFavoritesThree.Size = new Size(349, 146);
+            flpFavoritesThree.Size = new Size(423, 188);
             flpFavoritesThree.TabIndex = 2;
             // 
-            // playerListView
+            // flpAllPlayers
             // 
-            playerListView.Location = new Point(11, 12);
-            playerListView.Name = "playerListView";
-            playerListView.Size = new Size(313, 496);
-            playerListView.TabIndex = 4;
-            playerListView.UseCompatibleStateImageBehavior = false;
-            playerListView.MouseDown += playerListView_MouseDown;
+            flpAllPlayers.Location = new Point(4, 12);
+            flpAllPlayers.Name = "flpAllPlayers";
+            flpAllPlayers.Size = new Size(466, 604);
+            flpAllPlayers.TabIndex = 4;
             // 
             // FavoritePlayerSelectorForm
             // 
-            ClientSize = new Size(691, 520);
-            Controls.Add(playerListView);
+            ClientSize = new Size(911, 628);
+            Controls.Add(flpAllPlayers);
             Controls.Add(flpFavoritesThree);
             Controls.Add(flpFavoritesTwo);
             Controls.Add(flpFavoritesOne);
@@ -96,6 +94,6 @@ namespace WorldCupForms
         }
         private FlowLayoutPanel flpFavoritesTwo;
         private FlowLayoutPanel flpFavoritesThree;
-        private ListView playerListView;
+        private FlowLayoutPanel flpAllPlayers;
     }
 }
