@@ -60,6 +60,8 @@ namespace WorldCupForms
         private void InitializeDataGrids()
         {
             dgvPlayerRanking.Columns.Clear();
+            dgvPlayerRanking.AllowUserToAddRows = false;
+            
             dgvPlayerRanking.Columns.Add(new DataGridViewImageColumn { HeaderText = LanguageService.Image(), Name = "Image", Width = 80, ImageLayout = DataGridViewImageCellLayout.Zoom });
             dgvPlayerRanking.Columns.Add("Name", LanguageService.Name());
             dgvPlayerRanking.Columns.Add("Goals", LanguageService.Goals());
@@ -67,6 +69,8 @@ namespace WorldCupForms
             dgvPlayerRanking.Columns.Add("Appearances", LanguageService.Appearances());
 
             dgvMatchRanking.Columns.Clear();
+            dgvMatchRanking.AllowUserToAddRows = false;
+
             dgvMatchRanking.Columns.Add("Location", LanguageService.Location());
             dgvMatchRanking.Columns.Add("Attendance", LanguageService.Attendance());
             dgvMatchRanking.Columns.Add("HomeTeam", LanguageService.HomeTeam());
