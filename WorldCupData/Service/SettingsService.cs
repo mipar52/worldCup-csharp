@@ -1,36 +1,58 @@
 ﻿using WorldCupData.Enums;
 using System;
 using System.IO;
-
 namespace WorldCupData.Service
 {
     public class SettingsService
     {
-        private const string SettingsFile = "settings.txt";
+        private static readonly string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "settings.txt");
+        public bool WasLoaded { get; private set; } = false;
 
-        public void SaveSettings(string language, ChampionshipType championship)
+        public void Save()
         {
-            File.WriteAllText(SettingsFile, $"{language}|{championship}");
+            Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
+            File.WriteAllText(FilePath, $"language={AppSettings.Language}\nchampionship={AppSettings.Championship}\ndataMode={AppSettings.DataSourceMode}");
         }
 
-        public (string Language, ChampionshipType Championship) LoadSettings()
+        public void Load()
         {
-            if (!File.Exists(SettingsFile))
-                return ("en", ChampionshipType.Men);
-
-            var parts = File.ReadAllText(SettingsFile).Split('|');
-            if (parts.Length != 2)
-                return ("en", ChampionshipType.Men);
-
-            try
+            if (!File.Exists(FilePath))
             {
-                var language = parts[0];
-                var championship = Enum.Parse<ChampionshipType>(parts[1]);
-                return (language, championship);
+                WasLoaded = false;
+                return;
             }
-            catch
+
+            var lines = File.ReadAllLines(FilePath);
+            
+
+            foreach (var line in lines)
             {
-                return ("en", ChampionshipType.Men);
+                var parts = line.Split('=');
+                if (parts.Length != 2) continue;
+
+                switch (parts[0])
+                {
+                    case "language":
+                        AppSettings.Language = parts[1];
+                        break;
+                    case "championship":
+                        if (Enum.TryParse(parts[1], out ChampionshipType champ))
+                            AppSettings.Championship = champ;
+                        break;
+                    case "dataMode":
+                        if (Enum.TryParse(parts[1], out DataSourceMode mode))
+                            AppSettings.DataSourceMode = mode;
+                        break;
+                }
+            }
+            WasLoaded = true;
+        }
+
+        public void Reset()
+        {
+            if (File.Exists(FilePath))
+            {
+                File.Delete(FilePath);
             }
         }
     }
