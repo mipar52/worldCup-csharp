@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WorldCupData.Model;
+using WorldCupWPF.Views;
 
 namespace WorldCupWPF.Controls
 {
@@ -116,6 +118,13 @@ namespace WorldCupWPF.Controls
                 {
                     var player = linePlayers[i];
                     var card = new PlayerCardControl(player);
+                    card.PlayerClicked += (s, p) =>
+                    {
+                      //  int goals = match.HomeTeamEvents.Count(ev => ev.Player == p.Name && ev.Type == "goal");
+                      //  int yellowCards = match.HomeTeamEvents.Count(ev => ev.Player == p.Name && ev.Type == "yellow-card");
+                        var window = new PlayerInfoWindow(p); // Optionally pass stats if available
+                        window.ShowDialog();
+                    };
 
                     double y = startY + i * spacing;
                     double adjustedX = x;

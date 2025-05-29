@@ -24,12 +24,16 @@ namespace WorldCupWPF.Controls
     public partial class PlayerCardControl : UserControl
     {
         public StartingEleven Player { get; private set; }
+        public event EventHandler<StartingEleven> PlayerClicked;
 
         public PlayerCardControl(StartingEleven player)
         {
             InitializeComponent();
             Player = player;
             UpdateUI();
+
+            this.MouseLeftButtonUp += PlayerCardControl_MouseLeftButtonUp;
+
         }
 
         private void UpdateUI()
@@ -44,6 +48,11 @@ namespace WorldCupWPF.Controls
                 imgPlayer.Source = new BitmapImage(new Uri(imagePath));
             else
                 imgPlayer.Source = new BitmapImage(new Uri(ImageService.GetPlaceholderImagePath(AppSettings.Championship)));
+        }
+
+        private void PlayerCardControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            PlayerClicked?.Invoke(this, Player);
         }
     }
 }
