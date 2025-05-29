@@ -16,6 +16,7 @@ namespace WorldCupForms
         public MainForm()
         {
             InitializeComponent();
+            
             _dataProvider = new DataProvider();
         }
 
@@ -23,14 +24,14 @@ namespace WorldCupForms
         {
             var settingsService = new SettingsService();
             settingsService.Load();
- 
+            ChangeLanguageStrings();
             cbFavoriteTeam.SelectedIndexChanged += cbFavoriteTeam_SelectedIndexChanged;
             await LoadTeamsAsync();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            var result = MessageBox.Show("Are you sure you want to exit?", "Exit", MessageBoxButtons.YesNo);
+            var result = MessageBox.Show(LanguageService.ExitConfirmation(), LanguageService.Exit(), MessageBoxButtons.YesNo);
             if (result == DialogResult.No)
             {
                 e.Cancel = true;
@@ -48,13 +49,13 @@ namespace WorldCupForms
             using var settingsForm = new SettingsForm();
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
-                // Reload settings if needed
+                ChangeLanguageStrings();
             }
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("World Cup App\nVersion 1.0", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(LanguageService.AppInfo(), LanguageService.About(), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
@@ -66,7 +67,29 @@ namespace WorldCupForms
         {
             // TODO
         }
+        private void ChangeLanguageStrings()
+        {
+            this.Text = LanguageService.MainFormTitle();
+            fileToolStripMenuItem.Text = LanguageService.File();
+            settingsToolStripMenuItem.Text = LanguageService.Settings();
+            changeApplicationSettingsToolStripMenuItem.Text = LanguageService.ChangeAppSettings();
+            resetSettingsToolStripMenuItem.Text = LanguageService.ResetSettings();
+            exitToolStripMenuItem1.Text = LanguageService.Exit();
+            helpToolStripMenuItem.Text = LanguageService.Help();
+            aboutToolStripMenuItem.Text = LanguageService.About();
+            lbCurrentTeam.Text = LanguageService.FavoriteTeam();
+            lbFavoritePlayers.Text = LanguageService.FavoritePlayers();
+            btnChooseFavoritePlayers.Text = LanguageService.ChooseFavoritePlayers();
+            btnRanking.Text = LanguageService.GetRankings();
 
+            foreach (Control ctrl in flpFavoritePlayers.Controls)
+            {
+                if (ctrl is PlayerCardControl card)
+                {
+                    card.UpdateLanguage();
+                }
+            }
+        }
         private async System.Threading.Tasks.Task LoadTeamsAsync()
         {
             var teams = await _dataProvider.GetTeamsAsync(AppSettings.Championship, currentMode);
@@ -194,6 +217,16 @@ namespace WorldCupForms
                 // Restart the app to show the startup screen
                 Application.Restart();
                 Environment.Exit(0);
+            }
+        }
+
+        private void changeApplicationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using var settingsForm = new SettingsForm();
+            if (settingsForm.ShowDialog() == DialogResult.OK)
+            {
+                ChangeLanguageStrings();
+                // Reload settings if needed
             }
         }
     }

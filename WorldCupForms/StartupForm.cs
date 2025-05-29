@@ -32,6 +32,7 @@ namespace WorldCupForms
 
         private void SetLanguageStrings()
         {
+            this.Text = LanguageService.StartupTitle();
             welcomeLabel.Text = LanguageService.SetWelcomeMessage();
             lblSelectLang.Text = LanguageService.SetApplicationLangugeString();
             grpChampionship.Text = LanguageService.SetWorldChampionShipPicker();

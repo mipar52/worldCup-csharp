@@ -25,14 +25,15 @@ namespace WorldCupForms
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
+            changeApplicationSettingsToolStripMenuItem = new ToolStripMenuItem();
+            resetSettingsToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem1 = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             flpFavoritePlayers = new FlowLayoutPanel();
-            label1 = new Label();
-            label2 = new Label();
+            lbCurrentTeam = new Label();
+            lbFavoritePlayers = new Label();
             btnRanking = new Button();
-            resetSettingsToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -72,16 +73,30 @@ namespace WorldCupForms
             // 
             // settingsToolStripMenuItem
             // 
-            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { resetSettingsToolStripMenuItem });
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { changeApplicationSettingsToolStripMenuItem, resetSettingsToolStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(180, 22);
+            settingsToolStripMenuItem.Size = new Size(116, 22);
             settingsToolStripMenuItem.Text = "Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
+            // 
+            // changeApplicationSettingsToolStripMenuItem
+            // 
+            changeApplicationSettingsToolStripMenuItem.Name = "changeApplicationSettingsToolStripMenuItem";
+            changeApplicationSettingsToolStripMenuItem.Size = new Size(221, 22);
+            changeApplicationSettingsToolStripMenuItem.Text = "Change application settings";
+            changeApplicationSettingsToolStripMenuItem.Click += changeApplicationSettingsToolStripMenuItem_Click;
+            // 
+            // resetSettingsToolStripMenuItem
+            // 
+            resetSettingsToolStripMenuItem.Name = "resetSettingsToolStripMenuItem";
+            resetSettingsToolStripMenuItem.Size = new Size(221, 22);
+            resetSettingsToolStripMenuItem.Text = "Reset settings";
+            resetSettingsToolStripMenuItem.Click += resetSettingsToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem1
             // 
             exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
-            exitToolStripMenuItem1.Size = new Size(180, 22);
+            exitToolStripMenuItem1.Size = new Size(116, 22);
             exitToolStripMenuItem1.Text = "Exit";
             exitToolStripMenuItem1.Click += exitToolStripMenuItem1_Click;
             // 
@@ -107,25 +122,25 @@ namespace WorldCupForms
             flpFavoritePlayers.Size = new Size(1250, 225);
             flpFavoritePlayers.TabIndex = 1;
             // 
-            // label1
+            // lbCurrentTeam
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 238);
-            label1.Location = new Point(531, 76);
-            label1.Name = "label1";
-            label1.Size = new Size(209, 25);
-            label1.TabIndex = 4;
-            label1.Text = "Current favorite team:";
+            lbCurrentTeam.AutoSize = true;
+            lbCurrentTeam.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 238);
+            lbCurrentTeam.Location = new Point(531, 76);
+            lbCurrentTeam.Name = "lbCurrentTeam";
+            lbCurrentTeam.Size = new Size(209, 25);
+            lbCurrentTeam.TabIndex = 4;
+            lbCurrentTeam.Text = "Current favorite team:";
             // 
-            // label2
+            // lbFavoritePlayers
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 238);
-            label2.Location = new Point(20, 109);
-            label2.Name = "label2";
-            label2.Size = new Size(156, 25);
-            label2.TabIndex = 5;
-            label2.Text = "Favorite players:";
+            lbFavoritePlayers.AutoSize = true;
+            lbFavoritePlayers.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 238);
+            lbFavoritePlayers.Location = new Point(20, 109);
+            lbFavoritePlayers.Name = "lbFavoritePlayers";
+            lbFavoritePlayers.Size = new Size(156, 25);
+            lbFavoritePlayers.TabIndex = 5;
+            lbFavoritePlayers.Text = "Favorite players:";
             // 
             // btnRanking
             // 
@@ -137,19 +152,12 @@ namespace WorldCupForms
             btnRanking.UseVisualStyleBackColor = true;
             btnRanking.Click += btnRanking_Click;
             // 
-            // resetSettingsToolStripMenuItem
-            // 
-            resetSettingsToolStripMenuItem.Name = "resetSettingsToolStripMenuItem";
-            resetSettingsToolStripMenuItem.Size = new Size(180, 22);
-            resetSettingsToolStripMenuItem.Text = "Reset settings";
-            resetSettingsToolStripMenuItem.Click += resetSettingsToolStripMenuItem_Click;
-            // 
             // MainForm
             // 
             ClientSize = new Size(1282, 588);
             Controls.Add(btnRanking);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(lbFavoritePlayers);
+            Controls.Add(lbCurrentTeam);
             Controls.Add(cbFavoriteTeam);
             Controls.Add(flpFavoritePlayers);
             Controls.Add(btnChooseFavoritePlayers);
@@ -164,9 +172,10 @@ namespace WorldCupForms
             PerformLayout();
         }
         private FlowLayoutPanel flpFavoritePlayers;
-        private Label label1;
-        private Label label2;
+        private Label lbCurrentTeam;
+        private Label lbFavoritePlayers;
         private Button btnRanking;
         private ToolStripMenuItem resetSettingsToolStripMenuItem;
+        private ToolStripMenuItem changeApplicationSettingsToolStripMenuItem;
     }
 }

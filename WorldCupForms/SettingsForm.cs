@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,7 @@ namespace WorldCupForms
         public SettingsForm()
         {
             InitializeComponent();
+            ChangeLanguageStrings();
             _settingsService = new SettingsService();
 
             cbLanguage.Items.AddRange(new[] { "English", "Croatian" });
@@ -29,7 +31,19 @@ namespace WorldCupForms
 
 
 
-
+        private void ChangeLanguageStrings()
+        {
+            this.Text = LanguageService.SettingsTitle();
+            lbChange.Text = LanguageService.WantAChange();
+            lbLanguage.Text = LanguageService.SetApplicationLangugeString();
+            grpChampionship.Text = LanguageService.SetWorldChampionShipPicker();
+            rbMen.Text = LanguageService.SetMenWorldChampion();
+            rbWomen.Text = LanguageService.SetWorldChampionShipPicker();
+            rbApi.Text = LanguageService.ViaApi();
+            rbLocal.Text = LanguageService.Locally();
+            btnConfirm.Text = LanguageService.Confirm();
+            btnCancel.Text = LanguageService.Cancel();
+        }
 
 
         private void btnConfirm_Click_1(object sender, EventArgs e)
@@ -44,7 +58,7 @@ namespace WorldCupForms
 
             _settingsService.Save();
 
-            MessageBox.Show("Settings saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(LanguageService.SaveSuccess(), LanguageService.Success(), MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -79,7 +93,7 @@ namespace WorldCupForms
                 rbMen.Checked = true;
             else
                 rbWomen.Checked = true;
-            
+
             if (AppSettings.DataSourceMode == DataSourceMode.Api)
                 rbApi.Checked = true;
             else
@@ -89,6 +103,19 @@ namespace WorldCupForms
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void cbLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbLanguage.SelectedItem != null)
+            {
+                Debug.WriteLine($"Selected language: {cbLanguage.SelectedItem.ToString()}");
+                string selectedLanguage = cbLanguage.SelectedItem.ToString()!;
+                AppSettings.Language = selectedLanguage == "Croatian" ? "hr" : "en";
+                LanguageService.SetLanguage(AppSettings.Language);
+                // Reload language strings
+                ChangeLanguageStrings();
+            }
         }
     }
 }

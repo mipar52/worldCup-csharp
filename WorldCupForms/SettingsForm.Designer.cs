@@ -30,7 +30,7 @@
         {
             btnCancel = new Button();
             btnConfirm = new Button();
-            label1 = new Label();
+            lbChange = new Label();
             lbLanguage = new Label();
             grpChampionship = new GroupBox();
             rbMen = new RadioButton();
@@ -63,14 +63,14 @@
             btnConfirm.UseVisualStyleBackColor = true;
             btnConfirm.Click += btnConfirm_Click_1;
             // 
-            // label1
+            // lbChange
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(205, 9);
-            label1.Name = "label1";
-            label1.Size = new Size(334, 15);
-            label1.TabIndex = 11;
-            label1.Text = "Want a change? Feel free to change your app preferences here";
+            lbChange.AutoSize = true;
+            lbChange.Location = new Point(205, 9);
+            lbChange.Name = "lbChange";
+            lbChange.Size = new Size(334, 15);
+            lbChange.TabIndex = 11;
+            lbChange.Text = "Want a change? Feel free to change your app preferences here";
             // 
             // lbLanguage
             // 
@@ -121,6 +121,7 @@
             cbLanguage.Name = "cbLanguage";
             cbLanguage.Size = new Size(340, 23);
             cbLanguage.TabIndex = 8;
+            cbLanguage.SelectedIndexChanged += cbLanguage_SelectedIndexChanged;
             // 
             // gbData
             // 
@@ -164,7 +165,7 @@
             Controls.Add(gbData);
             Controls.Add(btnCancel);
             Controls.Add(btnConfirm);
-            Controls.Add(label1);
+            Controls.Add(lbChange);
             Controls.Add(lbLanguage);
             Controls.Add(grpChampionship);
             Controls.Add(cbLanguage);
@@ -192,5 +193,6 @@
         private GroupBox gbData;
         private RadioButton rbApi;
         private RadioButton rbLocal;
+        private Label lbChange;
     }
 }

@@ -27,11 +27,26 @@ namespace WorldCupForms
             pbPlayer.Click += (s, e) => ChooseImage();
             this.ContextMenuStrip = contextMenu;
             Player = player;
+            ChangeLanguageStrings();
             UpdateUI(player);
             SetupDragHandlers();
             this.MouseDown += PlayerCardControl_MouseDown;
         }
+        private void ChangeLanguageStrings()
+        {
+            lbName.Text = LanguageService.PlayerName();
+            lbNumber.Text = LanguageService.PlayerNumber();
+            lbPlayerPosition.Text = LanguageService.PlayerPosition();
+            promoteToFavoriteToolStripMenuItem.Text = LanguageService.PromoteToFavorite();
+            demoteToolStripMenuItem.Text = LanguageService.DemoteToOther();
+        }
+        public void UpdateLanguage()
+        {
+            ChangeLanguageStrings();
 
+            if (Player != null && lbPlayerCaptain.Visible)
+                lbPlayerCaptain.Text = LanguageService.PlayerCaptin();
+        }
         private void UpdateUI(StartingEleven Player)
         {
             lbPlayerName.Text = Player.Name;
@@ -52,7 +67,7 @@ namespace WorldCupForms
             //pbPlayer.Image = Image.FromFile(ImageService.LoadPlaceholderImage());
             if (lbPlayerCaptain.Visible)
             {
-                lbPlayerCaptain.Text = "⭐ Captain";
+                lbPlayerCaptain.Text = LanguageService.PlayerCaptin();
             }
 
             // Optional: Load default image or use country code lookup

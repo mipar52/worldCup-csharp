@@ -19,6 +19,7 @@ namespace WorldCupForms
         public FavoritePlayerSelectorForm(List<StartingEleven> allPlayers, string code)
         {
             InitializeComponent();
+            ChangeLanguageStrings();
             _allPlayers = allPlayers;
             _teamCode = code;
             LoadList();
@@ -184,6 +185,12 @@ namespace WorldCupForms
             flpFavoritesThree.Controls.Remove(card);
         }
 
+        private void ChangeLanguageStrings()
+        {
+            this.Text = LanguageService.FavoritePlayersTitle();
+            btnSave.Text = LanguageService.SaveSelection();
+            btnCancel.Text = LanguageService.Cancel();
+        }
 
         private void PromoteToFavorite(PlayerCardControl card)
         {
@@ -201,7 +208,7 @@ namespace WorldCupForms
 
             // Remove player from ListView
             var itemToRemove = flpAllPlayers.Controls
-                .Cast<ListViewItem>()
+                .Cast<PlayerCardControl>()
                 .FirstOrDefault(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
 
             if (itemToRemove != null)
@@ -217,7 +224,7 @@ namespace WorldCupForms
 
             // Re-add player to ListView if not already there
             bool exists = flpAllPlayers.Controls
-                .Cast<ListViewItem>()
+                .Cast<PlayerCardControl>()
                 .Any(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
 
             if (!exists)

@@ -36,6 +36,7 @@ namespace WorldCupForms
         private async void RankingForm_Load(object sender, EventArgs e)
         {
             var favoriteTeamCode = FavoriteService.Load(AppSettings.Championship)?.TeamCode;
+            ChangeLanguageStrings();
             if (string.IsNullOrEmpty(favoriteTeamCode))
             {
                 MessageBox.Show("Favorite team not selected.");
@@ -48,21 +49,28 @@ namespace WorldCupForms
             PopulatePlayerRanking(favoriteTeamCode);
             PopulateMatchRanking();
         }
+        private void ChangeLanguageStrings()
+        {
+            this.Text = LanguageService.RankingsTitle();
+            fileToolStripMenuItem.Text = LanguageService.File();
+            printItem.Text = LanguageService.Print();
+            printPreviewToolStripMenuItem.Text = LanguageService.PrintPreview();
+        }
 
         private void InitializeDataGrids()
         {
             dgvPlayerRanking.Columns.Clear();
-            dgvPlayerRanking.Columns.Add(new DataGridViewImageColumn { HeaderText = "Image", Name = "Image", Width = 80, ImageLayout = DataGridViewImageCellLayout.Zoom });
-            dgvPlayerRanking.Columns.Add("Name", "Name");
-            dgvPlayerRanking.Columns.Add("Goals", "Goals");
-            dgvPlayerRanking.Columns.Add("YellowCards", "Yellow Cards");
-            dgvPlayerRanking.Columns.Add("Appearances", "Appearances");
+            dgvPlayerRanking.Columns.Add(new DataGridViewImageColumn { HeaderText = LanguageService.Image(), Name = "Image", Width = 80, ImageLayout = DataGridViewImageCellLayout.Zoom });
+            dgvPlayerRanking.Columns.Add("Name", LanguageService.Name());
+            dgvPlayerRanking.Columns.Add("Goals", LanguageService.Goals());
+            dgvPlayerRanking.Columns.Add("YellowCards", LanguageService.YellowCards());
+            dgvPlayerRanking.Columns.Add("Appearances", LanguageService.Appearances());
 
             dgvMatchRanking.Columns.Clear();
-            dgvMatchRanking.Columns.Add("Location", "Location");
-            dgvMatchRanking.Columns.Add("Attendance", "Attendance");
-            dgvMatchRanking.Columns.Add("HomeTeam", "Home Team");
-            dgvMatchRanking.Columns.Add("AwayTeam", "Away Team");
+            dgvMatchRanking.Columns.Add("Location", LanguageService.Location());
+            dgvMatchRanking.Columns.Add("Attendance", LanguageService.Attendance());
+            dgvMatchRanking.Columns.Add("HomeTeam", LanguageService.HomeTeam());
+            dgvMatchRanking.Columns.Add("AwayTeam", LanguageService.AwayTeam());
         }
 
 
@@ -137,8 +145,8 @@ namespace WorldCupForms
         private void PreparePrintContent()
         {
             printLines.Clear();
-            printLines.Add("=== PLAYER RANKINGS ===");
-            printLines.Add($"{"Name".PadRight(25)}{"Goals",7}{"Yellows",10}{"Apps",7}");
+            printLines.Add($"=== {LanguageService.PlayerRankings()} ===");
+            printLines.Add($"{LanguageService.Name().PadRight(25)}{LanguageService.Goals(),7}{LanguageService.YellowCards(),10}{LanguageService.Appearances(),7}");
 
             foreach (DataGridViewRow row in dgvPlayerRanking.Rows)
             {
@@ -154,7 +162,7 @@ namespace WorldCupForms
 
             printLines.Add("");
             printLines.Add("=== MATCH RANKINGS ===");
-            printLines.Add(string.Format("{0,-30}{1,10}   {2,-25}{3,-25}", "Location", "Visitors", "Home", "Away"));
+            printLines.Add(string.Format("{0,-30}{1,10}   {2,-25}{3,-25}", LanguageService.Location(), LanguageService.Attendance(), LanguageService.HomeTeam(), LanguageService.AwayTeam()));
 
             foreach (DataGridViewRow row in dgvMatchRanking.Rows)
             {
@@ -219,7 +227,7 @@ namespace WorldCupForms
         {
             if (e.PrintAction == PrintAction.PrintToPrinter)
             {
-                MessageBox.Show("Printing finished.");
+                MessageBox.Show(LanguageService.PrintingFinished());
             }
         }
 
@@ -256,7 +264,7 @@ namespace WorldCupForms
         private void printPreviewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PreparePrintContent();
-            printDocumentRankings.DocumentName = "Ranking Report";
+            printDocumentRankings.DocumentName = LanguageService.RankingReport();
             printPreviewDialog.Document = printDocumentRankings;
             printPreviewDialog.Width = 1000;
             printPreviewDialog.Height = 800;

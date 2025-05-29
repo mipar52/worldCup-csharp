@@ -31,8 +31,8 @@
             components = new System.ComponentModel.Container();
             pbPlayer = new PictureBox();
             lbName = new Label();
-            label1 = new Label();
-            label2 = new Label();
+            lbPosition = new Label();
+            lbNumber = new Label();
             lbPlayerName = new Label();
             lbPlayerNumber = new Label();
             lbPlayerPosition = new Label();
@@ -61,23 +61,23 @@
             lbName.TabIndex = 1;
             lbName.Text = "Player name:";
             // 
-            // label1
+            // lbPosition
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(4, 65);
-            label1.Name = "label1";
-            label1.Size = new Size(88, 15);
-            label1.TabIndex = 2;
-            label1.Text = "Player position:";
+            lbPosition.AutoSize = true;
+            lbPosition.Location = new Point(4, 65);
+            lbPosition.Name = "lbPosition";
+            lbPosition.Size = new Size(88, 15);
+            lbPosition.TabIndex = 2;
+            lbPosition.Text = "Player position:";
             // 
-            // label2
+            // lbNumber
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(4, 44);
-            label2.Name = "label2";
-            label2.Size = new Size(87, 15);
-            label2.TabIndex = 3;
-            label2.Text = "Player number:";
+            lbNumber.AutoSize = true;
+            lbNumber.Location = new Point(4, 44);
+            lbNumber.Name = "lbNumber";
+            lbNumber.Size = new Size(87, 15);
+            lbNumber.TabIndex = 3;
+            lbNumber.Text = "Player number:";
             // 
             // lbPlayerName
             // 
@@ -144,8 +144,8 @@
             Controls.Add(lbPlayerPosition);
             Controls.Add(lbPlayerNumber);
             Controls.Add(lbPlayerName);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(lbNumber);
+            Controls.Add(lbPosition);
             Controls.Add(lbName);
             Controls.Add(pbPlayer);
             Name = "PlayerCardControl";
@@ -162,8 +162,8 @@
 
         private PictureBox pbPlayer;
         private Label lbName;
-        private Label label1;
-        private Label label2;
+        private Label lbPosition;
+        private Label lbNumber;
         private Label lbPlayerName;
         private Label lbPlayerNumber;
         private Label lbPlayerPosition;
