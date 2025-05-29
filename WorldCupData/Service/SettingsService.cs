@@ -11,7 +11,7 @@ namespace WorldCupData.Service
         public void Save()
         {
             Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-            File.WriteAllText(FilePath, $"language={AppSettings.Language}\nchampionship={AppSettings.Championship}\ndataMode={AppSettings.DataSourceMode}");
+            File.WriteAllText(FilePath, $"language={AppSettings.Language}\nchampionship={AppSettings.Championship}\ndataMode={AppSettings.DataSourceMode}\ndisplayMode={AppSettings.DisplayMode}");
         }
 
         public void Load()
@@ -42,6 +42,9 @@ namespace WorldCupData.Service
                     case "dataMode":
                         if (Enum.TryParse(parts[1], out DataSourceMode mode))
                             AppSettings.DataSourceMode = mode;
+                        break;
+                    case "displayMode":
+                        AppSettings.DisplayMode = parts[1];
                         break;
                 }
             }

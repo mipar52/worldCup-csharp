@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="WorldCupWPF.Controls.FieldLayoutControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WorldCupWPF.Controls"
+             xmlns:vm="clr-namespace:WorldCupWPF.ViewModels"
+             x:Name="FieldControl"
+             Height="700" Width="800">
+
+    <UserControl.Resources>
+        <ImageBrush x:Key="FieldBackground" ImageSource="C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupWPF\Images\field.jpg" Stretch="Fill" />
+    </UserControl.Resources>
+
+    <Canvas Background="{StaticResource FieldBackground}" x:Name="FieldCanvas" Margin="0,54,-82,-34">
+        <!-- PlayerCardControls will be added dynamically in code-behind or via binding -->
+    </Canvas>
+</UserControl>
