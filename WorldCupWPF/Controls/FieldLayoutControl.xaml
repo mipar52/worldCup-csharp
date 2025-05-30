@@ -4,13 +4,17 @@
              xmlns:local="clr-namespace:WorldCupWPF.Controls"
              xmlns:vm="clr-namespace:WorldCupWPF.ViewModels"
              x:Name="FieldControl"
-             Height="700" Width="800">
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
 
     <UserControl.Resources>
         <ImageBrush x:Key="FieldBackground" ImageSource="C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupWPF\Images\field.jpg" Stretch="Fill" />
     </UserControl.Resources>
 
-    <Canvas Background="{StaticResource FieldBackground}" x:Name="FieldCanvas" Margin="0,54,-82,-34">
-        <!-- PlayerCardControls will be added dynamically in code-behind or via binding -->
-    </Canvas>
+    <Grid>
+        <Canvas x:Name="FieldCanvas"
+                Background="{StaticResource FieldBackground}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+    </Grid>
 </UserControl>

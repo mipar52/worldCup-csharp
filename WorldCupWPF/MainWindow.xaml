@@ -17,39 +17,110 @@
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <Grid Margin="20">
+    <Grid Margin="20,20,10,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Top controls -->
             <RowDefinition Height="Auto"/>
+            <!-- Match result -->
             <RowDefinition Height="*"/>
+            <!-- Field layout fills remaining -->
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10" Grid.Row="0" HorizontalAlignment="Center">
-            <Button Content="View Info" Click="ViewInfoButton_Click" />
 
-            <Button Content="View Info" Command="{Binding ShowTeamInfo}" />
-            <ComboBox Width="200"
-                      ItemsSource="{Binding AvailableTeams}"
-                      DisplayMemberPath="DisplayName"
-                      SelectedItem="{Binding SelectedTeam}" />
-            <ComboBox Width="200"
-                      ItemsSource="{Binding OpponentOptions}"
-                      SelectedItem="{Binding SelectedOpponentCode}" />
+        <StackPanel Orientation="Horizontal"
+            Margin="0,20,0,20"
+            Grid.Row="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="#F8F8F8"
+            >
 
+            <Button Content="View Team Info"
+            Click="ViewInfoButton_Click"
+            Width="120"
+            Height="40"
+            Margin="10,0"
+            Background="#6C63FF"
+            Foreground="White"
+            FontWeight="Bold"
+            />
+
+            <ComboBox Width="200"
+              Height="40"
+              ItemsSource="{Binding AvailableTeams}"
+              DisplayMemberPath="DisplayName"
+              SelectedItem="{Binding SelectedTeam}"
+              Margin="10,0"
+              />
+
+            <ComboBox Width="200"
+              Height="40"
+              ItemsSource="{Binding OpponentOptions}"
+              SelectedItem="{Binding SelectedOpponentCode}"
+              Margin="10,0"
+              />
+
+            <Button Content="View Team Info"
+            Command="{Binding ShowOpponentTeamInfo}"
+            Width="120"
+            Height="40"
+            Margin="10,0"
+            Background="#FF6C63"
+            Foreground="White"
+            FontWeight="Bold"
+            />
         </StackPanel>
 
-        <TextBlock Grid.Row="1"
-                   Text="{Binding MatchResult}"
-                   FontSize="18"
-                   HorizontalAlignment="Center"
-                   Margin="0,10"
-                   FontWeight="Bold" />
+        <Button Grid.Column="1"
+            Content="⚙ Settings"
+            Width="100"
+            Margin="10"
+            HorizontalAlignment="Right"
+            Click="Settings_Click"/>
+
+        <TextBlock x:Name="MatchResultText"
+           Grid.Row="1"
+           Text="{Binding MatchResult}"
+           FontSize="28"
+           FontWeight="Bold"
+           Foreground="#FF4500"
+           HorizontalAlignment="Center"
+           Margin="0,10, 10 , 10"
+           TextWrapping="Wrap"
+           TextAlignment="Center"
+           Opacity="0">
+            <TextBlock.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     From="0" To="1"
+                                     Duration="0:0:0.5"
+                                     AutoReverse="False"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                     From="0.8" To="1"
+                                     Duration="0:0:0.5"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                     From="0.8" To="1"
+                                     Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </TextBlock.Triggers>
+            <TextBlock.RenderTransform>
+                <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+
         <controls:FieldLayoutControl 
-                Grid.Row="2" Width="1193"
-    HorizontalAlignment="Left"
-            HomeTeamPlayers="{Binding HomeTeamPlayers}"
-            AwayTeamPlayers="{Binding AwayTeamPlayers}"
-Margin="10,13,0,89" />
+    Grid.Row="2"
+    HomeTeamPlayers="{Binding HomeTeamPlayers}"
+    AwayTeamPlayers="{Binding AwayTeamPlayers}"
+    Margin="10"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch" />
+    
 
     </Grid>
 </Window>

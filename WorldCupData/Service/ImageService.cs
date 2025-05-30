@@ -22,6 +22,7 @@ namespace WorldCupData.Service
         public static string GetPlaceholderImagePath(ChampionshipType type)
         {
             // Adjust based on your project structure
+
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string relativePath = Path.Combine("Files","worldcup.sfg.io", type.ToString().ToLower(),"Images", "placeholderTwo.jpg");
 
@@ -37,11 +38,12 @@ namespace WorldCupData.Service
 
         public static void SavePlayerImage(ChampionshipType type, string playerName, string sourceFilePath)
         {
-         string ImageFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", type.ToString().ToLower(), "Images");
-         string MapFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", type.ToString().ToLower(), "Images", "players_images.txt");
 
 
-        Directory.CreateDirectory(ImageFolder);
+            string ImageFolder = PathHelper.GetImageFolderPath(type);
+            string MapFile = PathHelper.GetImageMappingFilePath(type);
+
+            Directory.CreateDirectory(ImageFolder);
             Directory.CreateDirectory(Path.GetDirectoryName(MapFile)!);
 
             string extension = Path.GetExtension(sourceFilePath);
@@ -63,9 +65,9 @@ namespace WorldCupData.Service
 
         private static Dictionary<string, string> LoadImageMappings(ChampionshipType type)
         {
-            string ImageFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", type.ToString().ToLower(), "Images");
-            string MapFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", type.ToString().ToLower(), "Images", "players_images.txt");
-
+            string ImageFolder = PathHelper.GetImageFolderPath(type);
+            string MapFile = PathHelper.GetImageMappingFilePath(type);
+            
             if (_cache != null) return _cache;
 
             var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WorldCupData.Enums;
@@ -46,10 +42,25 @@ namespace WorldCupWPF.ViewModels
         public ICommand ConfirmCommand => new RelayCommand(Confirm);
         public ICommand CancelCommand => new RelayCommand(Cancel);
 
+        public event Action OnConfirmed;
+        public event Action OnCanceled;
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
+        public StartupViewModel()
+        {
+            // Initialize with default values or previously saved settings
+            SelectedLanguage = AppSettings.Language == "hr" ? "Croatian" : "English";
+            SelectedChampionship = AppSettings.Championship;
+            SelectedDisplayMode = AppSettings.DisplayMode ?? "Fullscreen";
+            // Ensure the selected display mode is valid
+            if (!DisplayModes.Contains(SelectedDisplayMode))
+            {
+                SelectedDisplayMode = "Fullscreen";
+            }
+        }
         private void Confirm()
         {
             AppSettings.Language = SelectedLanguage == "Croatian" ? "hr" : "en";
@@ -57,15 +68,12 @@ namespace WorldCupWPF.ViewModels
             AppSettings.DisplayMode = SelectedDisplayMode;
 
             new SettingsService().Save();
-
-            var mainWindow = new MainWindow();
-            mainWindow.Show();
+            OnConfirmed?.Invoke();
         }
 
         private void Cancel()
         {
-            
-            Application.Current.MainWindow.DialogResult = false;
+            OnCanceled?.Invoke();
         }
     }
 }

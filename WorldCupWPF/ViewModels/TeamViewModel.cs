@@ -17,6 +17,8 @@ namespace WorldCupWPF.ViewModels
         {
             Team = team;
         }
+
+        public override string ToString() => DisplayName;
     }
 
 }

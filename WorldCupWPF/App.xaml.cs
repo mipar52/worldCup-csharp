@@ -17,20 +17,18 @@ namespace WorldCupWPF
             var settingsService = new SettingsService();
             settingsService.Load();
 
-            if (!settingsService.WasLoaded)
+            if (settingsService.WasLoaded)
             {
                 var startupWindow = new StartupWindow();
-                bool? result = startupWindow.ShowDialog();
-
-                if (result != true)
-                {
-                    Shutdown(); // User canceled
-                    return;
-                }
+                startupWindow.Show();
+            }
+            else
+            {
+                var mainWindow = new MainWindow();
+                Application.Current.MainWindow = mainWindow;
+                mainWindow.Show();
             }
 
-            var mainWindow = new MainWindow();
-            mainWindow.Show();
         }
     }
 }
