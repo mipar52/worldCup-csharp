@@ -1,0 +1,2 @@
+team=CRC
+players=Keylor NAVAS,Giancarlo GONZALEZ,Oscar DUARTE

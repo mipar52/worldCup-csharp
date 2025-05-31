@@ -1,0 +1,3 @@
+Keylor NAVAS=C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupData\Files\worldcup.sfg.io\men\Images\Keylor NAVAS.jpeg
+Giancarlo GONZALEZ=C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupData\Files\worldcup.sfg.io\men\Images\Giancarlo GONZALEZ.jpg
+Celso BORGES=C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupData\Files\worldcup.sfg.io\men\Images\Celso BORGES.PNG

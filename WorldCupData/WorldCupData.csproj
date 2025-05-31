@@ -54,16 +54,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Files\worldcup.sfg.io\men\Images\field.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Files\worldcup.sfg.io\men\Images\placeholder.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Files\worldcup.sfg.io\men\Images\placeholderTwo.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Files\worldcup.sfg.io\women\Images\" />
+    <EmbeddedResource Include="Files\worldcup.sfg.io\women\Images\placeholderTwo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

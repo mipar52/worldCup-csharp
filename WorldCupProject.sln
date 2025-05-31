@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldCupForms", "WorldCupFo
 		{31BCB814-49AE-4963-9A74-B50F41FC3011} = {31BCB814-49AE-4963-9A74-B50F41FC3011}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldCupWPF", "WorldCupWPF\WorldCupWPF.csproj", "{5062FC9C-212B-4073-A0E3-D258BB86E15A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{0164247C-7960-45C6-9626-4392F8A354E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0164247C-7960-45C6-9626-4392F8A354E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0164247C-7960-45C6-9626-4392F8A354E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5062FC9C-212B-4073-A0E3-D258BB86E15A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5062FC9C-212B-4073-A0E3-D258BB86E15A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5062FC9C-212B-4073-A0E3-D258BB86E15A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5062FC9C-212B-4073-A0E3-D258BB86E15A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

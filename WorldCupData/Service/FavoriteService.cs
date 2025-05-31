@@ -12,7 +12,14 @@ namespace WorldCupData.Service
 
         public static void Save(ChampionshipType type,string teamCode, List<string> playerNames)
         {
-            string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "worldup.sfg.io", type.ToString().ToLower(), "favorite.txt");
+            string SharedBasePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "WorldCupData", "worldcup.sfg.io", type.ToString().ToLower()
+            );
+
+            string FilePath = PathHelper.GetFavoritesFilePath(type);
+
+
             Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
             string content = $"team={teamCode}\nplayers={string.Join(",", playerNames)}";
             File.WriteAllText(FilePath, content);
@@ -20,7 +27,7 @@ namespace WorldCupData.Service
 
         public static (string TeamCode, List<string> PlayerNames)? Load(ChampionshipType type)
         {
-            string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "worldup.sfg.io" ,type.ToString().ToLower(), "favorite.txt");
+            string FilePath = PathHelper.GetFavoritesFilePath(type);
 
             if (!File.Exists(FilePath))
                 return null;

@@ -13,5 +13,9 @@ namespace WorldCupData.Service
         public static ChampionshipType Championship { get; set; }
 
         public static DataSourceMode DataSourceMode { get; set; }
+
+        // for WPF app only
+        public static string DisplayMode { get; set; }
+
     }
 }
