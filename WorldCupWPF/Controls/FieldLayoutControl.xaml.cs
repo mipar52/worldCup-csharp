@@ -168,24 +168,24 @@ namespace WorldCupWPF.Controls
                         {
                             color = new SolidColorBrush(Colors.IndianRed);
                         }
-                        
-                        if (!isHomeTeam && AwayTeamEvents != null)
+                       
+                    }
+                    if (!isHomeTeam && AwayTeamEvents != null)
+                    {
+                        goals = AwayTeamEvents.Count(ev => ev.Player == player.Name && (ev.TypeOfEvent == TypeOfEvent.Goal || ev.TypeOfEvent == TypeOfEvent.GoalPenalty));
+                        yellowCards = AwayTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.YellowCard);
+                        goalsOwn = AwayTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.GoalOwn);
+                        if (goals > 0)
                         {
-                            goals = AwayTeamEvents.Count(ev => ev.Player == player.Name && (ev.TypeOfEvent == TypeOfEvent.Goal || ev.TypeOfEvent == TypeOfEvent.GoalPenalty));
-                            yellowCards = AwayTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.YellowCard);
-                            goalsOwn = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.GoalOwn);
-                            if (goals > 0)
-                            {
-                                color = new SolidColorBrush(Colors.LightGreen);
-                            }
-                            else if (yellowCards > 0)
-                            {
-                                color = new SolidColorBrush(Colors.Yellow);
-                            }
-                            else if (goalsOwn > 0)
-                            {
-                                color = new SolidColorBrush(Colors.IndianRed);
-                            }
+                            color = new SolidColorBrush(Colors.LightGreen);
+                        }
+                        else if (yellowCards > 0)
+                        {
+                            color = new SolidColorBrush(Colors.Yellow);
+                        }
+                        else if (goalsOwn > 0)
+                        {
+                            color = new SolidColorBrush(Colors.IndianRed);
                         }
                     }
                     card.PlayerClicked += (s, p) =>
@@ -208,7 +208,8 @@ namespace WorldCupWPF.Controls
 
                     Canvas.SetLeft(card, adjustedX);
                     Canvas.SetTop(card, y);
-                    card.ToolTip = $"{LanguageService.Goals}: {goals}, {LanguageService.YellowCards}: {yellowCards}";
+                    
+                    card.ToolTip = $"{LanguageService.Goals()}: {goals}, {LanguageService.YellowCards()}: {yellowCards}";
                     card.Background = color;
                     FieldCanvas.Children.Add(card);
                 }
