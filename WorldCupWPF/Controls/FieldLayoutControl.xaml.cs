@@ -110,6 +110,7 @@ namespace WorldCupWPF.Controls
             // Define X-lanes for each position
             double fieldWidth = FieldCanvas.ActualWidth;
             double fieldHeight = FieldCanvas.ActualHeight;
+            bool useSmallCard = fieldWidth < 900 || fieldHeight < 600;
 
             double marginX = fieldWidth * 0.05;
             double marginY = fieldHeight * 0.05;
@@ -118,10 +119,10 @@ namespace WorldCupWPF.Controls
 
             // Corrected spacing based on your new rules
             double goalieX = isHomeTeam ? marginX + usableWidth * 0.10 : marginX + usableWidth * 0.90;
-            double defenderX = isHomeTeam ? marginX + usableWidth * 0.20 : marginX + usableWidth * 0.80;
-            double forwardX = isHomeTeam ? marginX + usableWidth * 0.32 : marginX + usableWidth * 0.68;
-            double midfieldX = isHomeTeam ? marginX + usableWidth * 0.45 : marginX + usableWidth * 0.55;
-
+            double defenderX = isHomeTeam ? marginX + usableWidth * 0.12 : marginX + usableWidth * 0.78;
+            double forwardX = isHomeTeam ? marginX + usableWidth * 0.3 : marginX + usableWidth * 0.68;
+            double midfieldX = isHomeTeam ? marginX + usableWidth * 0.38 : marginX + usableWidth * 0.62;
+          //  double forwardX = isHomeTeam ? (defenderX + midfieldX) / 2 + 0.2 : (defenderX + midfieldX) / 2 - 0.2;
 
 
 
@@ -144,26 +145,37 @@ namespace WorldCupWPF.Controls
                 int count = linePlayers.Count;
 
                 // Define dynamic card size
-                double cardWidth = Math.Clamp(fieldWidth * 0.08, 60, 140);
-                double cardHeight = Math.Clamp(fieldHeight * 0.12, 90, 180);
+                double cardWidth = useSmallCard
+                    ? Math.Clamp(fieldWidth * 0.06, 40, 80)
+                    : Math.Clamp(fieldWidth * 0.08, 60, 140);
+
+                double cardHeight = useSmallCard
+                    ? Math.Clamp(fieldHeight * 0.10, 60, 110)
+                    : Math.Clamp(fieldHeight * 0.15, 90, 200);
+
 
                 // Set margins
-                 marginY = fieldHeight * 0.05;
+                marginY = fieldHeight * 0.05;
                 usableHeight = fieldHeight - 2 * marginY;
 
-                // Calculate spacing
+                double spacingMultiplier = useSmallCard ? 1.0 : 1.6;
+
                 double spacing = count > 1
-                    ? Math.Max(cardHeight * 1.1, usableHeight / (count - 0.5))
+                    ? Math.Max(cardHeight * spacingMultiplier, usableHeight / (count + 0.2))
                     : 0;
+
 
                 double totalHeight = spacing * (count - 1);
                 double startY = marginY + (usableHeight - totalHeight - cardHeight) / 2;
 
 
+
                 for (int i = 0; i < count; i++)
                 {
                     var player = linePlayers[i];
-                    var card = new PlayerCardControl(player);
+                    UserControl card = useSmallCard
+                        ? new PlayerCardSmallControl(player)
+                        : new PlayerCardControl(player);
                     int goals = 0;
                     int yellowCards = 0;
                     int goalsOwn = 0;
@@ -205,18 +217,16 @@ namespace WorldCupWPF.Controls
                             color = new SolidColorBrush(Colors.IndianRed);
                         }
                     }
-                    card.PlayerClicked += (s, p) =>
-                    {
+                    if (card is PlayerCardControl largeCard)
+                        largeCard.PlayerClicked += (s, p) => new PlayerInfoWindow(p, goals, yellowCards).ShowDialog();
+                    else if (card is PlayerCardSmallControl smallCard)
+                        smallCard.PlayerClicked += (s, p) => new PlayerInfoWindow(p, goals, yellowCards).ShowDialog();
 
-
-                        var window = new PlayerInfoWindow(p, goals, yellowCards);
-                        window.ShowDialog();
-                    };
 
 
                     double baseX = xByPosition[position];
                     double centerY = fieldHeight / 2;
-                     spacing = 150; // base vertical spacing
+                    // spacing = useSmallCard ? 80: 140; // base vertical spacing
                     double y = centerY;
 
                     if (count <= 3)
@@ -228,21 +238,29 @@ namespace WorldCupWPF.Controls
                         // Arc layout
                         double angleStep = Math.PI / (count + 1);
                         double angle = angleStep * (i + 1);
-                        double radius = 240; // Increased radius for better spread
+                        double radius = useSmallCard ? 180 : 240;
 
                         // Larger spacing factor
-                        double verticalStretch = 1.1; // exaggerate the curve
-                        double horizontalStretch = 0.9; // optional: exaggerate width too
+                        double verticalStretch = useSmallCard ? 0.9 : 1.1; // exaggerate the curve
+                        double horizontalStretch =useSmallCard ? 0.5 : 0.9; // optional: exaggerate width too
 
                         y = centerY + Math.Cos(angle) * radius * verticalStretch - 50;
 
                         // Shift X slightly to avoid collisions
                         baseX += (isHomeTeam ? 1 : -1) * Math.Sin(angle) * 100 * horizontalStretch;
+                        if (position == Position.Midfield && !useSmallCard)
+                        {
+                            baseX += (i % 2 == 0 ? -1 : 1) * 30; // wiggle left/right
+                        }
+
+                        double horizontalOffset = useSmallCard ? 60 : 100;
+                      //  baseX += (isHomeTeam ? 1 : -1) * Math.Sin(angle) * horizontalOffset;
+
                     }
 
                     // Calculate card size based on field size
-                 //   double cardWidth = Math.Clamp(fieldWidth * 0.08, 60, 140);   // 8% width, clamped
-                 //   cardHeight = Math.Clamp(fieldHeight * 0.15, 90, 200); // 15% height, clamped
+                    //   double cardWidth = Math.Clamp(fieldWidth * 0.08, 60, 140);   // 8% width, clamped
+                    //   cardHeight = Math.Clamp(fieldHeight * 0.15, 90, 200); // 15% height, clamped
 
                     double Clamp(double val, double min, double max) => Math.Max(min, Math.Min(max, val));
 
@@ -250,8 +268,8 @@ namespace WorldCupWPF.Controls
                     baseX = Clamp(baseX, 0, fieldWidth - cardWidth);
                     y = Clamp(y, 0, fieldHeight - cardHeight);
 
-              //      card.Width = cardWidth;
-              //      card.Height = cardHeight;
+                  //  card.Width = cardWidth;
+                   // card.Height = cardHeight;
 
                     Canvas.SetLeft(card, baseX);
                     Canvas.SetTop(card, y);
