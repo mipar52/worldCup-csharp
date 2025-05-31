@@ -8,7 +8,7 @@
              VerticalAlignment="Stretch">
 
     <UserControl.Resources>
-        <ImageBrush x:Key="FieldBackground" ImageSource="C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupWPF\Images\field.jpg" Stretch="Fill" />
+        <ImageBrush x:Name="FieldImage" x:Key="FieldBackground" Stretch="Fill" />
     </UserControl.Resources>
 
     <Grid>

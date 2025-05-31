@@ -1,0 +1,2 @@
+team=AUS
+players=Lydia WILLIAMS,Chloe LOGARZO,Caitlin FOORD

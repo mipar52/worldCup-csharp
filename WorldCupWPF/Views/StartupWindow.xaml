@@ -6,9 +6,6 @@
        WindowStartupLocation="CenterScreen"  
        KeyDown="Window_KeyDown">
 
-    <Window.DataContext>
-        <vm:StartupViewModel/>
-    </Window.DataContext>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -20,19 +17,19 @@
 
         <!-- Language -->
         <StackPanel Margin="0 0 0 20">
-            <TextBlock Text="Pick Application Language:" FontWeight="Bold"/>
-            <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" />
+            <TextBlock Name ="PickAppLanguage" Text="Pick Application Language:" FontWeight="Bold"/>
+            <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" SelectionChanged="LanguageComboBox_SelectionChanged"/>
         </StackPanel>
 
         <!-- Championship -->
         <StackPanel Grid.Row="1" Margin="0 0 0 20">
-            <TextBlock Text="Pick World Championship:" FontWeight="Bold"/>
+            <TextBlock Name="PickWorldChampionship" Text="Pick World Championship:" FontWeight="Bold"/>
             <ComboBox ItemsSource="{Binding Championships}" SelectedItem="{Binding SelectedChampionship}" />
         </StackPanel>
 
         <!-- Resolution -->
         <StackPanel Grid.Row="2" Margin="0 0 0 20">
-            <TextBlock Text="Pick Display Mode (Window size):" FontWeight="Bold"/>
+            <TextBlock Name="PickDisplaySize" Text="Pick Display Mode (Window size):" FontWeight="Bold"/>
             <ComboBox ItemsSource="{Binding DisplayModes}" SelectedItem="{Binding SelectedDisplayMode}" />
         </StackPanel>
 
@@ -42,14 +39,14 @@
             HorizontalAlignment="Center"
             Margin="0,42,0,43"
             Width="190">
-            <Button Content="Confirm"
+            <Button Name="BtnConfirm" Content="Confirm"
             Width="80"
             Height="45"
             Command="{Binding ConfirmCommand}"
             Margin="0,0,20,0"/>
             <!-- Right margin only -->
 
-            <Button Content="Cancel"
+            <Button Name="BtnCancel" Content="Cancel"
             Width="80"
             Height="45"
             Background="PaleVioletRed"

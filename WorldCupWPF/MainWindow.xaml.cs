@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorldCupData.Service;
 using WorldCupWPF.ViewModels;
 using WorldCupWPF.Views;
 
@@ -23,13 +24,21 @@ namespace WorldCupWPF
         public MainWindow()
         {
             InitializeComponent();
-
+            ChangeLanguageStrings();
             if (DataContext is MainViewModel vm)
             {
                     _ = vm.LoadTeamsAsync();
                 vm.PropertyChanged += Vm_PropertyChanged;
             }
 
+        }
+
+        private void ChangeLanguageStrings()
+        {
+            this.Title = LanguageService.MainWindowTitle();
+            BtnHomeTeamInfo.Content = LanguageService.ViewTeamInfo();
+            BtnOpponentInfo.Content = LanguageService.ViewTeamInfo();
+            BtnSettings.Content = LanguageService.SettingsButton();
         }
         private void ViewInfoButton_Click(object sender, RoutedEventArgs e)
         {
@@ -46,12 +55,54 @@ namespace WorldCupWPF
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            var settingsWindow = new StartupWindow();
-            settingsWindow.ShowDialog();
+            var settingsWindow = new StartupWindow(isFromSettings: true);
 
-            // Optional: reload or apply settings after dialog closes
-            // e.g., check if settings changed and refresh UI or restart app
+            if (settingsWindow.DataContext is StartupViewModel vm)
+            {
+                vm.OnConfirmed += () =>
+                {
+                    ApplySettings();
+                    settingsWindow.Close();
+                };
+            }
+
+            settingsWindow.Owner = this;
+            settingsWindow.ShowDialog();
         }
+
+        private void ApplySettings()
+        {
+            // Apply display mode
+            if (AppSettings.DisplayMode == LanguageService.FullScreen())
+            {
+                WindowStyle = WindowStyle.None;
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                WindowStyle = WindowStyle.SingleBorderWindow;
+                WindowState = WindowState.Normal;
+
+                switch (AppSettings.DisplayMode)
+                {
+                    case "1024x768":
+                        Width = 1024;
+                        Height = 768;
+                        break;
+                    case "1366x768":
+                        Width = 1366;
+                        Height = 768;
+                        break;
+                    case "1920x1080":
+                        Width = 1920;
+                        Height = 1080;
+                        break;
+                }
+            }
+
+            ChangeLanguageStrings();
+        }
+
 
         private void Vm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -84,7 +135,30 @@ namespace WorldCupWPF
             sb.Begin();
         }
 
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                var result = MessageBox.Show(
+                    LanguageService.ExitConfirmation(),
+                    LanguageService.Exit(),
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    Application.Current.Shutdown();
+                }
+
+                // Prevent further propagation if needed
+                e.Handled = true;
+            }
+        }
+
+
 
     }
+
 
 }

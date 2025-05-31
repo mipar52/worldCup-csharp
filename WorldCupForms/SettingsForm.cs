@@ -38,7 +38,7 @@ namespace WorldCupForms
             lbLanguage.Text = LanguageService.SetApplicationLangugeString();
             grpChampionship.Text = LanguageService.SetWorldChampionShipPicker();
             rbMen.Text = LanguageService.SetMenWorldChampion();
-            rbWomen.Text = LanguageService.SetWorldChampionShipPicker();
+            rbWomen.Text = LanguageService.SetWomenWorldChampion();
             rbApi.Text = LanguageService.ViaApi();
             rbLocal.Text = LanguageService.Locally();
             btnConfirm.Text = LanguageService.Confirm();

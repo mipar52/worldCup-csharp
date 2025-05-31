@@ -8,7 +8,8 @@
         xmlns:utils="clr-namespace:WorldCupWPF.Utils"
         xmlns:local="clr-namespace:WorldCupWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="934" Width="1333">
+        Title="MainWindow" Height="934" Width="1333"
+        KeyDown="Window_KeyDown">
     <Window.Resources>
         <utils:ObservableToListConverter x:Key="ToListConverter" />
     </Window.Resources>
@@ -36,7 +37,7 @@
             Background="#F8F8F8"
             >
 
-            <Button Content="View Team Info"
+            <Button x:Name = "BtnHomeTeamInfo" Content="View Team Info"
             Click="ViewInfoButton_Click"
             Width="120"
             Height="40"
@@ -61,7 +62,7 @@
               Margin="10,0"
               />
 
-            <Button Content="View Team Info"
+            <Button x:Name="BtnOpponentInfo" Content="View Team Info"
             Command="{Binding ShowOpponentTeamInfo}"
             Width="120"
             Height="40"
@@ -72,7 +73,7 @@
             />
         </StackPanel>
 
-        <Button Grid.Column="1"
+        <Button x:Name="BtnSettings" Grid.Column="1"
             Content="⚙ Settings"
             Width="100"
             Margin="10"

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,7 +14,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WorldCupData.Model;
 using WorldCupWPF.Views;
 
@@ -29,6 +29,13 @@ namespace WorldCupWPF.Controls
         public FieldLayoutControl()
         {
             InitializeComponent();
+            string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "worldcup.sfg.io", "men", "Images", "field.jpg");
+            if (File.Exists(imagePath))
+            {
+                var bitmap = new BitmapImage(new Uri(imagePath, UriKind.Absolute));
+                FieldCanvas.Background = new ImageBrush(bitmap) { Stretch = Stretch.Fill };
+            }
+
             this.Loaded += FieldLayoutControl_Loaded;
             this.SizeChanged += (_, __) => RenderPlayers();
         }

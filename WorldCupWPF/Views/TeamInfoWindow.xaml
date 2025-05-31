@@ -17,30 +17,30 @@
 
         <StackPanel Grid.Row="1" Margin="0,20,0,0">
             <UniformGrid Columns="2" Rows="5" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,20">
-                <TextBlock Text="FIFA Code:" FontWeight="Bold" />
+                <TextBlock x:Name="lbFifaCode" Text="FIFA Code:" FontWeight="Bold" />
                 <TextBlock Text="{Binding FifaCode}" />
 
-                <TextBlock Text="Games Played:" FontWeight="Bold" />
+                <TextBlock x:Name="lbGamesPlayed" Text="Games Played:" FontWeight="Bold" />
                 <TextBlock Text="{Binding GamesPlayed}" />
 
-                <TextBlock Text="Wins:" FontWeight="Bold" />
+                <TextBlock x:Name="lbWins" Text="Wins:" FontWeight="Bold" />
                 <TextBlock Text="{Binding Wins}" />
 
-                <TextBlock Text="Losses:" FontWeight="Bold" />
+                <TextBlock x:Name="lbLoses" Text="Losses:" FontWeight="Bold" />
                 <TextBlock Text="{Binding Losses}" />
 
-                <TextBlock Text="Draws:" FontWeight="Bold" />
+                <TextBlock x:Name="lbDraws" Text="Draws:" FontWeight="Bold" />
                 <TextBlock Text="{Binding Draws}" />
 
-                <TextBlock Text="Goals For:" FontWeight="Bold" />
+                <TextBlock x:Name="lbGoalsFor" Text="Goals For:" FontWeight="Bold" />
                 <TextBlock Text="{Binding GoalsFor}" />
 
-                <TextBlock Text="Goals Against:" FontWeight="Bold" />
+                <TextBlock x:Name="lbGoalsAgainst" Text="Goals Against:" FontWeight="Bold" />
                 <TextBlock Text="{Binding GoalsAgainst}" />
 
-                <TextBlock Text="Goal Difference:" FontWeight="Bold" />
+                <TextBlock x:Name="lbGoalsDifference" Text="Goal Difference:" FontWeight="Bold" />
                 <TextBlock Text="{Binding GoalDifference}" />
-                <Button Content="Close"
+                <Button x:Name="BtnClose" Content="Close"
                     Width="100"
                     HorizontalAlignment="Center"
                     Click="Close_Click"/>

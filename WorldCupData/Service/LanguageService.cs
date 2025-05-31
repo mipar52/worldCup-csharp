@@ -555,5 +555,166 @@ namespace WorldCupData.Service
                 _ => throw new InvalidOperationException("Language not set correctly.")
             };
         }
+        // WPF strings
+
+        public static string? PickDisplaySize()
+        {
+            return _language switch
+            {
+                "hr" => "Odaberi način prikazivanja (veličina prozora):",
+                "en" => "Pick display mode (window size):",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string? FullScreen()
+        {
+            return _language switch
+            {
+                "hr" => "Puni zaslon",
+                "en" => "Fullscreen",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string? MainWindowTitle()
+        {
+            return _language switch
+            {
+                "hr" => "Pregled utakmica",
+                "en" => "Match maker",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string? ViewTeamInfo()
+        {
+            return _language switch
+            {
+                "hr" => "Detalji o momčadi",
+                "en" => "View team info",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string? SettingsButton()
+        {
+            return _language switch
+            {
+                "hr" => "⚙ Postavke",
+                "en" => "⚙ Settings",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string TeamInfoWindowTitle()
+        {
+            return _language switch
+            {
+                "hr" => "Informacije o momčadi",
+                "en" => "Team information",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string DrawsLabel()
+        {
+            return _language switch
+            {
+                "hr" => "Izjednačeno: ",
+                "en" => "Draws: ",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string LossesLabel()
+        {
+            return _language switch
+            {
+                "hr" => "Izgubljeno: ",
+                "en" => "Losses: ",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string GamesPlayedLabel()
+        {
+            return _language switch
+            {
+                "hr" => "Odigrano igara: ",
+                "en" => "Games played: ",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string GoalsAgainstLabel()
+        {
+            return _language switch
+            {
+                "hr" => "Golova protiv: ",
+                "en" => "Goals against: ",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string GoalsForLabel()
+        {
+            return _language switch
+            {
+                "hr" => "Golovi za: ",
+                "en" => "Goals for: ",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string FifaCodeLabel()
+        {
+            return _language switch
+            {
+                "hr" => "FIFA kod: ",
+                "en" => "FIFA code: ",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static object Close()
+        {
+            return _language switch
+            {
+                "hr" => "Zatvori",
+                "en" => "Close",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string WinsLabel()
+        {
+            return _language switch
+            {
+                "hr" => "Pobjede: ",
+                "en" => "Wins: ",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string GoalsDifferenceLabel()
+        {
+            return _language switch
+            {
+                "hr" => "Razlika u golovima: ",
+                "en" => "Goal difference: ",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string PickATeam()
+        {
+            return _language switch
+            {
+                "hr" => "Odaberi momčad da vidiš rezultate! ",
+                "en" => "Pick a team to see the stats!",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
     }
 }

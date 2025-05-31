@@ -234,7 +234,12 @@ namespace WorldCupWPF.ViewModels
 
         private void ExecuteShowOpponentTeamInfo()
         {
-            if (SelectedOpponentCode == null) return;
+            if (SelectedOpponentCode == null)
+            {
+                MessageBox.Show(LanguageService.PickATeam(),"", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            ;
 
             var teamInfoWindow = new TeamInfoWindow
             {
