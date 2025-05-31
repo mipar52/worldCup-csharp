@@ -79,12 +79,12 @@ namespace WorldCupWPF.Views
 
         private void UpdateUI(StartingEleven player, int goals, int yellowCards)
         {
-            Goals.Text = $"Goals: {goals}";
-            Yellows.Text = $"Yellow Cards: {yellowCards}";
+            Goals.Text = $"{LanguageService.Goals()}: {goals}";
+            Yellows.Text = $"{LanguageService.YellowCards()} {yellowCards}";
             PlayerName.Text = player.Name;
             PlayerPosition.Text = player.Position.ToString();
             PlayerNumber.Text = $"#{player.ShirtNumber}";
-            IsCaptain.Text = player.Captain ? "Captain" : "";
+            IsCaptain.Text = player.Captain ? LanguageService.PlayerCaptin() : "";
             string imagePath = ImageService.GetPlayerImagePath(AppSettings.Championship, player.Name);
             if (File.Exists(imagePath))
                 PlayerImage.Source = new BitmapImage(new Uri(imagePath));

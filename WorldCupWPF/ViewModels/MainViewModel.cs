@@ -33,6 +33,10 @@ namespace WorldCupWPF.ViewModels
         public List<StartingEleven> HomeTeamPlayers => HomeStartingEleven.ToList();
         public List<StartingEleven> AwayTeamPlayers => AwayStartingEleven.ToList();
 
+        public List<TeamEvent> HomeTeamEvents { get; private set; } = new();
+        public List<TeamEvent> AwayTeamEvents { get; private set; } = new();
+
+        public event Action MatchLoaded;
 
 
         private TeamViewModel _selectedTeam;
@@ -100,7 +104,11 @@ namespace WorldCupWPF.ViewModels
             MatchResult = match.HomeTeam.Code == SelectedTeam.Team.FifaCode
                 ? $"{match.HomeTeam.Goals} : {match.AwayTeam.Goals}"
                 : $"{match.AwayTeam.Goals} : {match.HomeTeam.Goals}";
-
+            // Team Events
+            
+            HomeTeamEvents = match.HomeTeamEvents.ToList();
+            AwayTeamEvents = match.AwayTeamEvents.ToList();
+            Debug.WriteLine($"Home Team Events Count direct: {HomeTeamEvents.Count}");
             // Players
             if (match.HomeTeamStatistics?.StartingEleven != null)
                 foreach (var p in match.HomeTeamStatistics.StartingEleven)
@@ -116,12 +124,15 @@ namespace WorldCupWPF.ViewModels
                     AwayStartingEleven.Add(p);
                     AwayTeamPlayers.Add(p);
                 }
+            MatchLoaded?.Invoke();
 
             // Notify field layout to refresh
             OnPropertyChanged(nameof(HomeTeamPlayers));
             OnPropertyChanged(nameof(AwayTeamPlayers));
             OnPropertyChanged(nameof(HomeStartingEleven));
             OnPropertyChanged(nameof(AwayStartingEleven));
+            OnPropertyChanged(nameof(HomeTeamEvents));
+            OnPropertyChanged(nameof(AwayTeamEvents));
         }
 
 

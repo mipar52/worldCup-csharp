@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using WorldCupData.Enums;
 using WorldCupData.Model;
+using WorldCupData.Service;
 using WorldCupWPF.Views;
 
 namespace WorldCupWPF.Controls
@@ -57,6 +60,25 @@ namespace WorldCupWPF.Controls
 
         public static readonly DependencyProperty AwayTeamPlayersProperty =
             DependencyProperty.Register(nameof(AwayTeamPlayers), typeof(IEnumerable<StartingEleven>), typeof(FieldLayoutControl), new PropertyMetadata(null, OnPlayersChanged));
+
+        public List<WorldCupData.Model.TeamEvent> HomeTeamEvents
+        {
+            get => (List<WorldCupData.Model.TeamEvent>)GetValue(HomeTeamEventsProperty);
+            set => SetValue(HomeTeamEventsProperty, value);
+        }
+
+        public static readonly DependencyProperty HomeTeamEventsProperty =
+            DependencyProperty.Register(nameof(HomeTeamEvents), typeof(List<WorldCupData.Model.TeamEvent>), typeof(FieldLayoutControl));
+
+        public List<WorldCupData.Model.TeamEvent> AwayTeamEvents
+        {
+            get => (List<WorldCupData.Model.TeamEvent>)GetValue(AwayTeamEventsProperty);
+            set => SetValue(AwayTeamEventsProperty, value);
+        }
+
+        public static readonly DependencyProperty AwayTeamEventsProperty =
+            DependencyProperty.Register(nameof(AwayTeamEvents), typeof(List<WorldCupData.Model.TeamEvent>), typeof(FieldLayoutControl));
+
 
         private static void OnPlayersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -125,18 +147,59 @@ namespace WorldCupWPF.Controls
                 {
                     var player = linePlayers[i];
                     var card = new PlayerCardControl(player);
+                    int goals = 0;
+                    int yellowCards = 0;
+                    int goalsOwn = 0;
+                    var color = new SolidColorBrush(Colors.White);
+                    if (isHomeTeam && HomeTeamEvents != null)
+                    {
+                        goals = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.Goal);
+                        yellowCards = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.YellowCard);
+                        goalsOwn = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.GoalOwn);
+                        if (goals > 0)
+                        {
+                            color = new SolidColorBrush(Colors.LightGreen);
+                        }
+                        else if (yellowCards > 0)
+                        {
+                            color = new SolidColorBrush(Colors.Yellow);
+                        }
+                        else if (goalsOwn > 0)
+                        {
+                            color = new SolidColorBrush(Colors.IndianRed);
+                        }
+                        
+                        if (!isHomeTeam && AwayTeamEvents != null)
+                        {
+                            goals = AwayTeamEvents.Count(ev => ev.Player == player.Name && (ev.TypeOfEvent == TypeOfEvent.Goal || ev.TypeOfEvent == TypeOfEvent.GoalPenalty));
+                            yellowCards = AwayTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.YellowCard);
+                            goalsOwn = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.GoalOwn);
+                            if (goals > 0)
+                            {
+                                color = new SolidColorBrush(Colors.LightGreen);
+                            }
+                            else if (yellowCards > 0)
+                            {
+                                color = new SolidColorBrush(Colors.Yellow);
+                            }
+                            else if (goalsOwn > 0)
+                            {
+                                color = new SolidColorBrush(Colors.IndianRed);
+                            }
+                        }
+                    }
                     card.PlayerClicked += (s, p) =>
                     {
-                      //  int goals = match.HomeTeamEvents.Count(ev => ev.Player == p.Name && ev.Type == "goal");
-                      //  int yellowCards = match.HomeTeamEvents.Count(ev => ev.Player == p.Name && ev.Type == "yellow-card");
-                        var window = new PlayerInfoWindow(p); // Optionally pass stats if available
+
+
+                        var window = new PlayerInfoWindow(p, goals, yellowCards);
                         window.ShowDialog();
                     };
 
                     double y = startY + i * spacing;
                     double adjustedX = x;
 
-                    // 👇 If 5 or more players, stagger players beyond the 4th
+                    // If 5 or more players, stagger players beyond the 4th
                     if (count > 4 && i >= 4)
                     {
                         y -= _random.Next(180, 200) * (i - 3); // move upward
@@ -145,11 +208,12 @@ namespace WorldCupWPF.Controls
 
                     Canvas.SetLeft(card, adjustedX);
                     Canvas.SetTop(card, y);
-
+                    card.ToolTip = $"{LanguageService.Goals}: {goals}, {LanguageService.YellowCards}: {yellowCards}";
+                    card.Background = color;
                     FieldCanvas.Children.Add(card);
                 }
             }
-            }
+        }
 
 
 

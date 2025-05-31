@@ -115,6 +115,7 @@
         </TextBlock>
 
         <controls:FieldLayoutControl 
+            x:Name="fieldLayoutControl"
     Grid.Row="2"
     HomeTeamPlayers="{Binding HomeTeamPlayers}"
     AwayTeamPlayers="{Binding AwayTeamPlayers}"

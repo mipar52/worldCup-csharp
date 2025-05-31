@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,7 +30,21 @@ namespace WorldCupWPF
             {
                     _ = vm.LoadTeamsAsync();
                 vm.PropertyChanged += Vm_PropertyChanged;
+
+                vm.MatchLoaded += () =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        Debug.WriteLine($"Home Team Events Count: {vm.HomeTeamEvents?.Count}");
+                        Debug.WriteLine($"Away Team Events Count: {vm.AwayTeamEvents?.Count}");
+
+                        fieldLayoutControl.HomeTeamEvents = vm.HomeTeamEvents;
+                        fieldLayoutControl.AwayTeamEvents = vm.AwayTeamEvents;
+                    });
+                };
             }
+
+
 
         }
 
@@ -106,9 +121,21 @@ namespace WorldCupWPF
 
         private void Vm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MainViewModel.MatchResult))
+            if (DataContext is MainViewModel vm)
             {
-                Dispatcher.Invoke(() => AnimateMatchResult());
+                if (e.PropertyName == nameof(MainViewModel.MatchResult))
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        AnimateMatchResult();
+
+                        Debug.WriteLine($"Home Team Events Count: {vm.HomeTeamEvents?.Count}");
+                        Debug.WriteLine($"Home Team Events Count: {vm.AwayTeamEvents?.Count}");
+
+                        fieldLayoutControl.HomeTeamEvents = vm.HomeTeamEvents;
+                        fieldLayoutControl.AwayTeamEvents = vm.AwayTeamEvents;
+                    });
+                }
             }
         }
 
