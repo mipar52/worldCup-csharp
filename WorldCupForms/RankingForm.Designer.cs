@@ -34,10 +34,10 @@
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             printItem = new ToolStripMenuItem();
+            printPreviewToolStripMenuItem = new ToolStripMenuItem();
             printDialogRankings = new PrintDialog();
             printDocumentRankings = new System.Drawing.Printing.PrintDocument();
             printPreviewDialog = new PrintPreviewDialog();
-            printPreviewToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dgvPlayerRanking).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvMatchRanking).BeginInit();
             menuStrip1.SuspendLayout();
@@ -78,9 +78,18 @@
             // printItem
             // 
             printItem.Name = "printItem";
-            printItem.Size = new Size(180, 22);
+            printItem.ShortcutKeys = Keys.Control | Keys.P;
+            printItem.Size = new Size(216, 22);
             printItem.Text = "Print";
             printItem.Click += printItem_Click;
+            // 
+            // printPreviewToolStripMenuItem
+            // 
+            printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
+            printPreviewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.P;
+            printPreviewToolStripMenuItem.Size = new Size(216, 22);
+            printPreviewToolStripMenuItem.Text = "Print preview";
+            printPreviewToolStripMenuItem.Click += printPreviewToolStripMenuItem_Click;
             // 
             // printDialogRankings
             // 
@@ -101,13 +110,6 @@
             printPreviewDialog.Icon = (Icon)resources.GetObject("printPreviewDialog.Icon");
             printPreviewDialog.Name = "printPreviewDialog";
             printPreviewDialog.Visible = false;
-            // 
-            // printPreviewToolStripMenuItem
-            // 
-            printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
-            printPreviewToolStripMenuItem.Size = new Size(180, 22);
-            printPreviewToolStripMenuItem.Text = "Print preview";
-            printPreviewToolStripMenuItem.Click += printPreviewToolStripMenuItem_Click;
             // 
             // RankingForm
             // 

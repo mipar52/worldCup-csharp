@@ -40,6 +40,8 @@ namespace WorldCupForms
             base.OnFormClosing(e);
         }
 
+        
+
         private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Close();
@@ -205,8 +207,8 @@ namespace WorldCupForms
         private void resetSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(
-    "Are you sure you want to reset application settings?\nThe app will restart and show the startup screen.",
-    "Reset Confirmation",
+   LanguageService.AreYouSureReset(),
+    LanguageService.ResetSettings(),
     MessageBoxButtons.YesNo,
     MessageBoxIcon.Warning);
 
@@ -227,8 +229,41 @@ namespace WorldCupForms
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
                 ChangeLanguageStrings();
-                // Reload settings if needed
             }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter)
+            {
+                if (cbFavoriteTeam.SelectedIndex == -1)
+                {
+                    MessageBox.Show(LanguageService.NoFavoriteCountrySelected(), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                } else
+                {
+                    btnChooseFavoritePlayers.PerformClick();
+                }
+                return true;
+            }
+            if(keyData == Keys.R)
+            {
+                if (cbFavoriteTeam.SelectedIndex == -1)
+                {
+                    MessageBox.Show(LanguageService.NoFavoriteCountrySelected(), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    btnRanking.PerformClick();
+                }
+                return true;
+            }
+
+            if (keyData == Keys.Escape)
+            {
+                Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

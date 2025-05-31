@@ -1,2 +1,2 @@
 team=CRC
-players=Keylor NAVAS,Giancarlo GONZALEZ,Celso BORGES
+players=Keylor NAVAS,Celso BORGES,Giancarlo GONZALEZ

@@ -75,28 +75,31 @@ namespace WorldCupForms
             // 
             settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { changeApplicationSettingsToolStripMenuItem, resetSettingsToolStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(116, 22);
+            settingsToolStripMenuItem.Size = new Size(180, 22);
             settingsToolStripMenuItem.Text = "Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
             // 
             // changeApplicationSettingsToolStripMenuItem
             // 
             changeApplicationSettingsToolStripMenuItem.Name = "changeApplicationSettingsToolStripMenuItem";
-            changeApplicationSettingsToolStripMenuItem.Size = new Size(221, 22);
+            changeApplicationSettingsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+            changeApplicationSettingsToolStripMenuItem.Size = new Size(261, 22);
             changeApplicationSettingsToolStripMenuItem.Text = "Change application settings";
             changeApplicationSettingsToolStripMenuItem.Click += changeApplicationSettingsToolStripMenuItem_Click;
             // 
             // resetSettingsToolStripMenuItem
             // 
             resetSettingsToolStripMenuItem.Name = "resetSettingsToolStripMenuItem";
-            resetSettingsToolStripMenuItem.Size = new Size(221, 22);
+            resetSettingsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Alt | Keys.R;
+            resetSettingsToolStripMenuItem.Size = new Size(261, 22);
             resetSettingsToolStripMenuItem.Text = "Reset settings";
             resetSettingsToolStripMenuItem.Click += resetSettingsToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem1
             // 
             exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
-            exitToolStripMenuItem1.Size = new Size(116, 22);
+            exitToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.E;
+            exitToolStripMenuItem1.Size = new Size(180, 22);
             exitToolStripMenuItem1.Text = "Exit";
             exitToolStripMenuItem1.Click += exitToolStripMenuItem1_Click;
             // 
