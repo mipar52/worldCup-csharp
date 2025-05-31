@@ -28,7 +28,6 @@ namespace WorldCupWPF
             ChangeLanguageStrings();
             if (DataContext is MainViewModel vm)
             {
-                    _ = vm.LoadTeamsAsync();
                 vm.PropertyChanged += Vm_PropertyChanged;
 
                 vm.MatchLoaded += () =>
@@ -178,14 +177,12 @@ namespace WorldCupWPF
                     Application.Current.Shutdown();
                 }
 
-                // Prevent further propagation if needed
                 e.Handled = true;
             }
+            else if (e.Key == Key.S)
+            {
+                BtnSettings.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
         }
-
-
-
     }
-
-
 }
