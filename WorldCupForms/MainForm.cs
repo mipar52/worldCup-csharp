@@ -6,13 +6,14 @@ using WorldCupData.Enums;
 using WorldCupData.Service;
 using WorldCupData.Model;
 using System.Diagnostics;
+using CustomControls;
+using WorldCupForms.UIUtils;
 
 namespace WorldCupForms
 {
     public partial class MainForm : Form
     {
         private readonly DataProvider _dataProvider;
-        private readonly DataSourceMode currentMode = DataSourceMode.File;
 
         public MainForm()
         {
@@ -20,14 +21,47 @@ namespace WorldCupForms
             
             _dataProvider = new DataProvider();
         }
-
         private async void MainForm_Load(object sender, EventArgs e)
         {
+
+           var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingTeams());
             var settingsService = new SettingsService();
             settingsService.Load();
             ChangeLanguageStrings();
-            cbFavoriteTeam.SelectedIndexChanged += cbFavoriteTeam_SelectedIndexChanged;
-            await LoadTeamsAsync();
+            
+            try
+            {
+                cbFavoriteTeam.SelectedIndexChanged += cbFavoriteTeam_SelectedIndexChanged;
+                await LoadTeamsAsync();
+            }
+            catch (Exception ex)
+            {
+                loadingPanel.Visible = false;
+                loadingPanel.Dispose();
+                DialogResult result = MessageBox.Show(
+                LanguageService.LoadServiceError(ex.Message),
+                LanguageService.Warning(),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+
+                if (result == DialogResult.OK)
+                {
+                    AppSettings.DataSourceMode = AppSettings.DataSourceMode == DataSourceMode.Api ? DataSourceMode.File : DataSourceMode.Api;
+                    settingsService.Save();
+                    try
+                    {
+                        await LoadTeamsAsync();
+                    }
+                    catch (Exception ex2)
+                    {
+                        MessageBox.Show(LanguageService.LoadAltServiceError(ex2.Message), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                return;
+            }
+            loadingPanel.Visible = false;
+            loadingPanel.Dispose();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -95,11 +129,14 @@ namespace WorldCupForms
         }
         private async System.Threading.Tasks.Task LoadTeamsAsync()
         {
-            var teams = await _dataProvider.GetTeamsAsync(AppSettings.Championship, currentMode);
+            var teams = await _dataProvider.GetTeamsAsync(AppSettings.Championship, AppSettings.DataSourceMode);
             cbFavoriteTeam.Items.Clear();
-            foreach (var team in teams)
+            if (teams != null) // Ensure teams is not null
             {
-                cbFavoriteTeam.Items.Add($"{team.Country} ({team.FifaCode})");
+                foreach (var team in teams)
+                {
+                    cbFavoriteTeam.Items.Add($"{team.Country} ({team.FifaCode})");
+                }
             }
 
             var favorites = FavoriteService.Load(AppSettings.Championship);
@@ -114,7 +151,7 @@ namespace WorldCupForms
                 if (matchedItem != null)
                 {
                     cbFavoriteTeam.SelectedItem = matchedItem;
-                    await LoadFavoritePlayersAsync(savedCode); // This uses FavoriteService.Load() internally
+                    await LoadFavoritePlayersAsync(savedCode);
                 }
             }
         }
@@ -122,86 +159,148 @@ namespace WorldCupForms
         private async void cbFavoriteTeam_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbFavoriteTeam.SelectedItem is not string selectedText) return;
-
+            var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingFavPlayers());
             var fifaCode = selectedText.Substring(selectedText.LastIndexOf('(') + 1).TrimEnd(')');
             File.WriteAllText("favorite_team.txt", fifaCode);
             await LoadFavoritePlayersAsync(fifaCode);
+            loadingPanel.Dispose();
+            loadingPanel.Visible = false;
         }
 
         private async void btnChooseFavoritePlayers_Click(object sender, EventArgs e)
         {
-            if (cbFavoriteTeam.SelectedItem is not string selectedText) return;
-
-            var fifaCode = selectedText.Substring(selectedText.LastIndexOf('(') + 1).TrimEnd(')');
-
-            var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, currentMode, fifaCode);
-            var firstMatch = matches.FirstOrDefault();
-
-            if (firstMatch == null)
+            try
             {
-                MessageBox.Show("No match data found for the selected team.");
-                return;
-            }
+                var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingFavPlayers());
+                if (cbFavoriteTeam.SelectedItem is not string selectedText) return;
 
-            var players = firstMatch.HomeTeam?.Code == fifaCode
-                ? firstMatch.HomeTeamStatistics?.StartingEleven.Concat(firstMatch.HomeTeamStatistics?.Substitutes).ToList()
-                : firstMatch.AwayTeamStatistics?.StartingEleven.Concat(firstMatch.AwayTeamStatistics?.Substitutes).ToList();
+                var fifaCode = selectedText.Substring(selectedText.LastIndexOf('(') + 1).TrimEnd(')');
 
-            if (players == null || players.Count == 0)
-            {
-                MessageBox.Show("No players found for this match.");
-                return;
-            }
+                var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, AppSettings.DataSourceMode, fifaCode);
+                var firstMatch = matches?.FirstOrDefault();
 
-            var selectorForm = new FavoritePlayerSelectorForm(players, fifaCode);
-            if (selectorForm.ShowDialog() == DialogResult.OK)
-            {
-                var selectedFavorites = selectorForm.SelectedFavorites;
-
-                flpFavoritePlayers.Controls.Clear();
-                foreach (var player in selectedFavorites)
+                if (firstMatch == null)
                 {
-                    flpFavoritePlayers.Controls.Add(new PlayerCardControl(player));
+                    MessageBox.Show(LanguageService.NoDataSelectedTeam());
+                    return;
                 }
+
+                var players = firstMatch.HomeTeam?.Code == fifaCode
+                    ? firstMatch.HomeTeamStatistics?.StartingEleven.Concat(firstMatch.HomeTeamStatistics?.Substitutes).ToList()
+                    : firstMatch.AwayTeamStatistics?.StartingEleven.Concat(firstMatch.AwayTeamStatistics?.Substitutes).ToList();
+
+                if (players == null || players.Count == 0)
+                {
+                    MessageBox.Show(LanguageService.NoPlayersError());
+                    return;
+                }
+
+                var selectorForm = new FavoritePlayerSelectorForm(players, fifaCode);
+                loadingPanel.Visible = false;
+                loadingPanel.Dispose();
+                if (selectorForm.ShowDialog() == DialogResult.OK)
+                {
+                    var selectedFavorites = selectorForm.SelectedFavorites;
+
+                    flpFavoritePlayers.Controls.Clear();
+                    foreach (var player in selectedFavorites)
+                    {
+                        flpFavoritePlayers.Controls.Add(new PlayerCardControl(player));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(LanguageService.ErrLoadingFavTeams(ex.Message), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
         }
 
         private async System.Threading.Tasks.Task LoadFavoritePlayersAsync(string fifaCode)
         {
-
-            var favoritePlayerNames = FavoriteService.Load(AppSettings.Championship);
-
-            if (favoritePlayerNames == null || favoritePlayerNames.Value.PlayerNames.Count == 0)
-                return;
-
-            var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, currentMode, fifaCode);
-            var firstMatch = matches.FirstOrDefault();
-
-            if (firstMatch == null) return;
-
-            var players = firstMatch.HomeTeam?.Code == fifaCode
-                ? firstMatch.HomeTeamStatistics?.StartingEleven.Concat(firstMatch.HomeTeamStatistics?.Substitutes).ToList()
-                : firstMatch.AwayTeamStatistics?.StartingEleven.Concat(firstMatch.AwayTeamStatistics?.Substitutes).ToList();
-
-            if (players == null) return;
-
-            var favoritePlayers = players
-                .Where(p => favoritePlayerNames.Value.PlayerNames.Contains(p.Name))
-                .ToList();
-
-            flpFavoritePlayers.Controls.Clear();
-
-            foreach (var player in favoritePlayers)
+            try
             {
-                flpFavoritePlayers.Controls.Add(new PlayerCardControl(player));
+                var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingFavPlayers());
+                var favoritePlayerNames = FavoriteService.Load(AppSettings.Championship);
+
+                if (favoritePlayerNames == null || favoritePlayerNames.Value.PlayerNames.Count == 0)
+                    return;
+
+                var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, AppSettings.DataSourceMode, fifaCode);
+                if (matches == null || !matches.Any())
+                {
+                    loadingPanel.Visible = false;
+                    loadingPanel.Dispose();
+                    flpFavoritePlayers.Controls.Clear();
+                    return;
+                }
+
+                var firstMatch = matches?.FirstOrDefault();
+                if (firstMatch == null)
+                {
+                    loadingPanel.Visible = false;
+                    flpFavoritePlayers.Controls.Clear();
+                    MessageBox.Show(LanguageService.NoMatchData(), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                };
+
+                var players = firstMatch.HomeTeam?.Code == fifaCode
+                    ? (firstMatch.HomeTeamStatistics?.StartingEleven ?? Enumerable.Empty<StartingEleven>())
+                        .Concat(firstMatch.HomeTeamStatistics?.Substitutes ?? Enumerable.Empty<StartingEleven>())
+                        .ToList()
+                    : (firstMatch.AwayTeamStatistics?.StartingEleven ?? Enumerable.Empty<StartingEleven>())
+                        .Concat(firstMatch.AwayTeamStatistics?.Substitutes ?? Enumerable.Empty<StartingEleven>())
+                        .ToList();
+
+                if (players == null) return;
+
+                var favoritePlayers = players
+                    .Where(p => favoritePlayerNames.Value.PlayerNames.Contains(p.Name))
+                    .ToList();
+
+                flpFavoritePlayers.Controls.Clear();
+
+                foreach (var player in favoritePlayers)
+                {
+                    flpFavoritePlayers.Controls.Add(new PlayerCardControl(player));
+                }
+                loadingPanel.Dispose();
+                loadingPanel.Visible = false; 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(LanguageService.ErrLoadingFavTeams(ex.Message), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnRanking_Click(object sender, EventArgs e)
         {
-            var rankingForm = new RankingForm(FavoriteService.Load(AppSettings.Championship).Value.TeamCode);
-            rankingForm.ShowDialog();
+            var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingRankings());
+            try
+            {
+                var favoriteData = FavoriteService.Load(AppSettings.Championship);
+                if (favoriteData == null || string.IsNullOrEmpty(favoriteData.Value.TeamCode))
+                {
+                    MessageBox.Show(LanguageService.NoFavoriteCountrySelected(), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    loadingPanel.Dispose();
+                    loadingPanel.Visible = false;
+                    return;
+                }
 
+                var teamcode = favoriteData.Value.TeamCode;
+
+                var rankingForm = new RankingForm(teamcode);
+                loadingPanel.Dispose();
+                loadingPanel.Visible = false;
+                rankingForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(LanguageService.ErrLoadingFavTeams(ex.Message), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                loadingPanel.Dispose();
+                loadingPanel.Visible = false;
+                return;
+            }
         }
 
         private void resetSettingsToolStripMenuItem_Click(object sender, EventArgs e)

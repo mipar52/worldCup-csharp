@@ -19,7 +19,11 @@ namespace WorldCupData.Service
                 if (Directory.Exists(candidate))
                     return Path.Combine(dir, "WorldCupData", "Files");
 
-                dir = Directory.GetParent(dir)?.FullName;
+                var fullName = Directory.GetParent(dir)?.FullName;
+                if (fullName == null)
+                    break;
+
+                dir = fullName;
             }
 
             throw new DirectoryNotFoundException("Could not find WorldCupData/Files folder.");
@@ -41,6 +45,11 @@ namespace WorldCupData.Service
         {
             string basePath = FindWorldCupDataBasePath();
             return Path.Combine(basePath, "worldcup.sfg.io", type.ToString().ToLower(), "Images", "players_images.txt");
+        }
+        public static string GetSettingsPath()
+        {
+            string basePath = FindWorldCupDataBasePath();
+            return Path.Combine(basePath, "Settings", "settings.txt");
         }
     }
 

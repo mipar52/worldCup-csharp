@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using WorldCupData.Model;
 using WorldCupData.Service;
+using WorldCupForms.UIUtils;
 
 namespace WorldCupForms
 {
@@ -20,6 +21,7 @@ namespace WorldCupForms
         {
             InitializeComponent();
             ChangeLanguageStrings();
+            var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingAllPlayers());
             _allPlayers = allPlayers;
             _teamCode = code;
             LoadList();
@@ -43,7 +45,7 @@ namespace WorldCupForms
             flpFavoritesOne.DragDrop += DragDropToFavorites;
             flpFavoritesTwo.DragDrop += DragDropToFavorites;
             flpFavoritesThree.DragDrop += DragDropToFavorites;
-
+            loadingPanel.Visible = false;
         }
 
         private void DragEnterHandler(object sender, DragEventArgs e)
@@ -89,14 +91,14 @@ namespace WorldCupForms
 
                 if (totalFavorites >= 3)
                 {
-                    MessageBox.Show("You can only select up to 3 favorite players.");
+                    MessageBox.Show(LanguageService.MaxThree();
                     return;
                 }
 
                 // Check if this slot is already filled
                 if (targetPanel.Controls.Count >= 1)
                 {
-                    MessageBox.Show("This slot is already taken. Please choose an empty one.", "Slot Full",
+                    MessageBox.Show(LanguageService.AlreadyTaken(), LanguageService.SlotFull(),
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -202,7 +204,7 @@ namespace WorldCupForms
             FlowLayoutPanel targetPanel = GetAvailableFavoritePanel();
             if (targetPanel == null)
             {
-                MessageBox.Show("You can only select up to 3 favorite players.");
+                MessageBox.Show(LanguageService.MaxThree());
                 return;
             }
 

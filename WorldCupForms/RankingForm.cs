@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using WorldCupData.Enums;
 using WorldCupData.Model;
 using WorldCupData.Service;
+using WorldCupForms.UIUtils;
 
 namespace WorldCupForms
 {
@@ -31,6 +32,7 @@ namespace WorldCupForms
             InitializeComponent();
             _dataProvider = new DataProvider();
             InitializeDataGrids();
+            //loadingPanel.Visible = false;
         }
 
         private async void RankingForm_Load(object sender, EventArgs e)
@@ -39,15 +41,32 @@ namespace WorldCupForms
             ChangeLanguageStrings();
             if (string.IsNullOrEmpty(favoriteTeamCode))
             {
-                MessageBox.Show("Favorite team not selected.");
+                MessageBox.Show(LanguageService.FavTeamNotSelected());
+                Close();
+                return;
+            }
+            try
+            {
+                var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, _mode, favoriteTeamCode);
+                if (matches == null)
+                {
+                    MessageBox.Show(LanguageService.NoMatchesFound());
+                    Close();
+                    return;
+                }
+
+                _teamMatches = matches;
+
+                PopulatePlayerRanking(favoriteTeamCode);
+                PopulateMatchRanking();
+            } catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading matches: {ex.Message}");
+                MessageBox.Show(LanguageService.ErrorLoadingMatches());
                 Close();
                 return;
             }
 
-            _teamMatches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, _mode, favoriteTeamCode);
-
-            PopulatePlayerRanking(favoriteTeamCode);
-            PopulateMatchRanking();
         }
         private void ChangeLanguageStrings()
         {
@@ -59,6 +78,7 @@ namespace WorldCupForms
 
         private void InitializeDataGrids()
         {
+            
             dgvPlayerRanking.Columns.Clear();
             dgvPlayerRanking.AllowUserToAddRows = false;
             
@@ -75,11 +95,13 @@ namespace WorldCupForms
             dgvMatchRanking.Columns.Add("Attendance", LanguageService.Attendance());
             dgvMatchRanking.Columns.Add("HomeTeam", LanguageService.HomeTeam());
             dgvMatchRanking.Columns.Add("AwayTeam", LanguageService.AwayTeam());
+
         }
 
 
         private void PopulatePlayerRanking(string teamCode)
         {
+            var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingRankings());
             var playerStats = new Dictionary<string, (StartingEleven Player, int Goals, int YellowCards, int Appearances)>();
 
             foreach (var match in _teamMatches)
@@ -127,10 +149,12 @@ namespace WorldCupForms
                 }
                 dgvPlayerRanking.Rows.Add(Image.FromFile(img), entry.Player.Name, entry.Goals, entry.YellowCards, entry.Appearances);
             }
+            loadingPanel.Visible = false;
         }
 
         private void PopulateMatchRanking()
         {
+            var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingRankings());
             var sorted = _teamMatches
                 .OrderByDescending(m => m.Attendance)
                 .ToList();
@@ -144,10 +168,13 @@ namespace WorldCupForms
                     match.HomeTeam.Country,
                     match.AwayTeam.Country);
             }
+            loadingPanel.Visible = false;
+            loadingPanel.Dispose();
         }
 
         private void PreparePrintContent()
         {
+            var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingPrintStuff());
             printLines.Clear();
             printLines.Add($"=== {LanguageService.PlayerRankings()} ===");
             printLines.Add($"{LanguageService.Name().PadRight(25)}{LanguageService.Goals(),7}{LanguageService.YellowCards(),10}{LanguageService.Appearances(),7}");
@@ -179,6 +206,8 @@ namespace WorldCupForms
 
                 printLines.Add(string.Format("{0,-30}{1,10}   {2,-25}{3,-25}", location, visitors, home, away));
             }
+            loadingPanel.Visible = false;
+            loadingPanel.Dispose();
         }
 
 

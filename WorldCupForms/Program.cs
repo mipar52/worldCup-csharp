@@ -14,7 +14,6 @@ namespace WorldCupForms
             // see https://aka.ms/applicationconfiguration.
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
             var settingsService = new SettingsService();
             settingsService.Load();
 
