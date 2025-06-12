@@ -17,13 +17,11 @@ namespace WorldCupForms.UIUtils
                 Height = 80
             };
 
-            // 2. Center it using ClientSize
             loadingPanel.Location = new Point(
                 (form.ClientSize.Width - loadingPanel.Width) / 2,
                 (form.ClientSize.Height - loadingPanel.Height) / 2
             );
 
-            // 3. Add and show it
             loadingPanel.SetMessage(message);
             form.Controls.Add(loadingPanel);
             loadingPanel.BringToFront();

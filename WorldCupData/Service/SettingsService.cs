@@ -14,12 +14,11 @@ namespace WorldCupData.Service
             if (filePath == null)
                 throw new InvalidOperationException("Could not get file path to save the app settings!");
 
-            // ✅ FIX: Get the directory of the file path
             string directory = Path.GetDirectoryName(filePath);
             if (directory == null)
                 throw new InvalidOperationException("Could not determine directory from file path!");
 
-            Directory.CreateDirectory(directory); // ✅ now creating a folder
+            Directory.CreateDirectory(directory); 
             File.WriteAllText(FilePath, $"language={AppSettings.Language}\nchampionship={AppSettings.Championship}\ndataMode={AppSettings.DataSourceMode}\ndisplayMode={AppSettings.DisplayMode}");
         }
 

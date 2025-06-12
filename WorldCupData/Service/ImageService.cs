@@ -21,8 +21,6 @@ namespace WorldCupData.Service
 
         public static string GetPlaceholderImagePath(ChampionshipType type)
         {
-            // Adjust based on your project structure
-
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string relativePath = Path.Combine("Files","worldcup.sfg.io", type.ToString().ToLower(),"Images", "placeholderTwo.jpg");
 

@@ -168,24 +168,20 @@ namespace WorldCupWPF.Controls
 
                 double cardWidth = useSmallCard
                     ? Math.Clamp(fieldWidth * 0.06, 40, 85)
-                    : Math.Clamp(fieldWidth * 0.08, 70, 160); // increased max from 140 → 160
+                    : Math.Clamp(fieldWidth * 0.08, 70, 160);
 
 
                 double cardHeight = useSmallCard
                     ? Math.Clamp(fieldHeight * 0.10, 60, 110)
                     : Math.Clamp(fieldHeight * 0.15, 90, 200);
 
-                // 1. Base spacing multiplier depending on card size
                 double spacingMultiplier = useSmallCard ? 1.01 : 1.01;
 
-                // 2. Apply multiplier
                 double baseSpacing = cardHeight * spacingMultiplier;
 
-                // 3. Calculate available spacing based on field height
                 double maxFittableSpacing = (usableHeight - cardHeight) / count;
 
-                // 4. Final spacing = min of baseSpacing and max allowed
-                double spacing = Math.Max(Math.Min(baseSpacing, maxFittableSpacing), 10); // never less than 10px
+                double spacing = Math.Max(Math.Min(baseSpacing, maxFittableSpacing), 10);
 
 
 

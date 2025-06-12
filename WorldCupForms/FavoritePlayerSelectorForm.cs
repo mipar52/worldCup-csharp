@@ -24,59 +24,66 @@ namespace WorldCupForms
             var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingAllPlayers());
             _allPlayers = allPlayers;
             _teamCode = code;
-            LoadList();
+            try
+            {
+                LoadList();
 
-            flpAllPlayers.AllowDrop = true;
-            flpAllPlayers.AutoScroll = true;
-            flpAllPlayers.WrapContents = false;
-            flpAllPlayers.FlowDirection = FlowDirection.TopDown;
+                flpAllPlayers.AllowDrop = true;
+                flpAllPlayers.AutoScroll = true;
+                flpAllPlayers.WrapContents = false;
+                flpAllPlayers.FlowDirection = FlowDirection.TopDown;
 
-            flpFavoritesOne.AllowDrop = true;
-            flpFavoritesTwo.AllowDrop = true;
-            flpFavoritesThree.AllowDrop = true;
+                flpFavoritesOne.AllowDrop = true;
+                flpFavoritesTwo.AllowDrop = true;
+                flpFavoritesThree.AllowDrop = true;
 
-            flpAllPlayers.DragEnter += DragEnterHandler;
-            flpFavoritesOne.DragEnter += DragEnterHandler;
-            flpFavoritesTwo.DragEnter += DragEnterHandler;
-            flpFavoritesThree.DragEnter += DragEnterHandler;
+                flpAllPlayers.DragEnter += DragEnterHandler;
+                flpFavoritesOne.DragEnter += DragEnterHandler;
+                flpFavoritesTwo.DragEnter += DragEnterHandler;
+                flpFavoritesThree.DragEnter += DragEnterHandler;
 
 
-            flpAllPlayers.DragDrop += DragDropToAllPlayers;
-            flpFavoritesOne.DragDrop += DragDropToFavorites;
-            flpFavoritesTwo.DragDrop += DragDropToFavorites;
-            flpFavoritesThree.DragDrop += DragDropToFavorites;
-            loadingPanel.Visible = false;
+                flpAllPlayers.DragDrop += DragDropToAllPlayers;
+                flpFavoritesOne.DragDrop += DragDropToFavorites;
+                flpFavoritesTwo.DragDrop += DragDropToFavorites;
+                flpFavoritesThree.DragDrop += DragDropToFavorites;
+                loadingPanel.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                loadingPanel.Visible = false;
+                MessageBox.Show(LanguageService.ErrorLoadingMatches(ex.Message) + "\n" + ex.Message, LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine(ex);
+
+            }
         }
 
-        private void DragEnterHandler(object sender, DragEventArgs e)
+        private void DragEnterHandler(object? sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(PlayerCardControl)))
                 e.Effect = DragDropEffects.Move;
         }
 
-        private void DragDropToAllPlayers(object sender, DragEventArgs e)
+        private void DragDropToAllPlayers(object? sender, DragEventArgs e)
         {
             if (e.Data.GetData(typeof(PlayerCardControl)) is PlayerCardControl card)
             {
-                // Remove from all panels
                 if (flpFavoritesOne.Controls.Contains(card)) flpFavoritesOne.Controls.Remove(card);
                 if (flpFavoritesTwo.Controls.Contains(card)) flpFavoritesTwo.Controls.Remove(card);
                 if (flpFavoritesThree.Controls.Contains(card)) flpFavoritesThree.Controls.Remove(card);
 
-                // Add back to ListView only if not already there
                 bool exists = flpAllPlayers.Controls
                     .Cast<PlayerCardControl>()
                     .Any(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
 
                 if (!exists)
                 {
-                   // var item = new ListViewItem() { Tag = card.Player };
                     flpAllPlayers.Controls.Add(card);
                 }
             }
         }
 
-        private void DragDropToFavorites(object sender, DragEventArgs e)
+        private void DragDropToFavorites(object? sender, DragEventArgs e)
         {
             if (e.Data.GetData(typeof(PlayerCardControl)) is PlayerCardControl card &&
                 sender is FlowLayoutPanel targetPanel)
@@ -95,7 +102,6 @@ namespace WorldCupForms
                     return;
                 }
 
-                // Check if this slot is already filled
                 if (targetPanel.Controls.Count >= 1)
                 {
                     MessageBox.Show(LanguageService.AlreadyTaken(), LanguageService.SlotFull(),
@@ -107,7 +113,7 @@ namespace WorldCupForms
                 card.Width = targetPanel.ClientSize.Width;
                 card.Height = targetPanel.ClientSize.Height; 
                 targetPanel.Controls.Add(card);
-                // Remove from ListView
+
                 var itemToRemove = flpAllPlayers.Controls
                     .Cast<PlayerCardControl>()
                     .FirstOrDefault(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
@@ -122,7 +128,6 @@ namespace WorldCupForms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Collect selected players
             SelectedFavorites = new List<StartingEleven>();
             foreach (var panel in new[] { flpFavoritesOne, flpFavoritesTwo, flpFavoritesThree })
             {
@@ -132,9 +137,6 @@ namespace WorldCupForms
                 }
             }
 
-            // Save using FavoriteService
-
-            // You might need to pass team code from constructor or store it
             string currentTeamCode = _teamCode;
 
             var playerNames = SelectedFavorites.Select(p => p.Name).ToList();
@@ -208,7 +210,6 @@ namespace WorldCupForms
                 return;
             }
 
-            // Remove player from ListView
             var itemToRemove = flpAllPlayers.Controls
                 .Cast<PlayerCardControl>()
                 .FirstOrDefault(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
@@ -224,7 +225,6 @@ namespace WorldCupForms
         {
             RemoveFromAllPanels(card);
 
-            // Re-add player to ListView if not already there
             bool exists = flpAllPlayers.Controls
                 .Cast<PlayerCardControl>()
                 .Any(i => (i.Tag as StartingEleven)?.Name == card.Player.Name);
