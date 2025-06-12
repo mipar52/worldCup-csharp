@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using WorldCupData.Model;
 
 namespace WorldCupData.Service
 {
@@ -332,6 +336,7 @@ namespace WorldCupData.Service
 
         public static string StartupTitle()
         {
+            Debug.WriteLine($"set language: {_language}");
             return _language switch
             {
                 "hr" => "Početne postavke",
@@ -567,7 +572,7 @@ namespace WorldCupData.Service
             };
         }
 
-        public static string? FullScreen()
+        public static string FullScreen()
         {
             return _language switch
             {
@@ -716,5 +721,223 @@ namespace WorldCupData.Service
                 _ => throw new InvalidOperationException("Language not set correctly.")
             };
         }
-    }
+
+        public static string? NoFavoriteCountrySelected()
+        {
+            return _language switch
+            {
+                "hr" => "Odaberi momčad kako bi mogao izabrati omiljene igrače!",
+                "en" => "Pick a team to pick the favorite players!",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string? Warning()
+        {
+            return _language switch
+            {
+                "hr" => "Upozorenje",
+                "en" => "Warning",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string LoadingTeams()
+        {
+            return _language switch
+            {
+                "hr" => "Učitavam timove...",
+                "en" => "Loading teams...",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string? LoadServiceError(string message)
+        {
+            return _language switch
+            {
+                "hr" => $"Greška prilikom učitavanja timova!\nRazlog: {message}\nKlikom na OK, pokušat ćemo skupiti podatke iz altenativnog izvora podataka.",
+                "en" => $"Error loading teams!\nReason: {message}\nBy pressing OK, we will try to get the info from the other data source.",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string? LoadAltServiceError(string message)
+        {
+            return _language switch
+            {
+                "hr" => $"Greška prilikom učitavanja podataka iz alternativnog izvora: {message}",
+                "en" => $"Error loading teams from the alternative source: {message}",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string LoadingFavPlayers()
+        {
+            return _language switch
+            {
+                "hr" => "Učitavam omiljene igrače...",
+                "en" => "Loading favorite players...",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string? NoDataSelectedTeam()
+        {
+            return _language switch
+            {
+                "hr" => "Nismo pronašli podatke za izabrani tim.",
+                "en" => "No match data found for the selected team.",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string? NoPlayersError()
+        {
+            return _language switch
+            {
+                "hr" => "Nismo pronašli igrače za ovu utakmicu",
+                "en" => "No players found for this match.",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string? ErrLoadingFavTeams(string message)
+        {
+            return _language switch
+            {
+                "hr" => $"Greška prilikom učitavanja omiljenog tima: {message}",
+                "en" => $"Error loading favorite players: { message }",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string? NoMatchData()
+        {
+            return _language switch
+            {
+                "hr" => "Nismo pronašli podatke za izabrani tim.",
+                "en" => "No match data found for the selected team.",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string LoadingRankings()
+        {
+            return _language switch
+            {
+                "hr" => "Učitavam rangiranja...",
+                "en" => "Loading rankings...",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string FavTeamNotSelected()
+        {
+            return _language switch
+            {
+                "hr" => "Omiljeni tim nije odabran!",
+                "en" => "Favorite team not selected!.",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string LoadingPrintStuff()
+        {
+            return _language switch
+            {
+                "hr" => "Pripremam stvari za printanje...",
+                "en" => "Preparing print content...",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string NoMatchesFound()
+        {
+            return _language switch
+            {
+                "hr" => "Nismo mogli pronaći nijednu utakmicu!",
+                "en" => "Could not find any matches!",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string? ErrorLoadingMatches(string message)
+        {
+            return _language switch
+            {
+                "hr" => $"Greška prilikom učitavanja utakmica: {message}",
+                "en" => $"Error with getting matches! Reason: {message}",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string LoadingAllPlayers()
+        {
+            return _language switch
+            {
+                "hr" => $"Učitavam sve igrače...",
+                "en" => $"Loading all players...",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string MaxThree()
+        {
+            return _language switch
+            {
+                "hr" => $"Možeš odabrati najviše 3 igrača!",
+                "en" => "You can only select up to 3 favorite players.",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+        public static string SlotFull()
+        {
+            return _language switch
+            {
+                "hr" => $"Puno",
+                "en" => $"Slot full",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string? AlreadyTaken()
+        {
+            return _language switch
+            {
+                "hr" => $"Ovo mjesto je već popunjeno! Izaberi prazno mjesto.",
+                "en" => "This slot is already taken. Please choose an empty one.",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+            
+        }
+
+        public static string ErrorApplyingSettings()
+        {
+            return _language switch
+            {
+                "hr" => $"Nismo mogli namjestiti postavke..",
+                "en" => "Error applying settings..",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string RenderingField()
+        {
+            return _language switch
+            {
+                "hr" => $"Učitavamo igrače i polje....",
+                "en" => "Rendering teams & fields....",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string ErrorRendering(string message)
+        {
+            return _language switch
+            {
+                "hr" => $"Greška prilikom učitavanja polja: {message}",
+                "en" => $"Error rendering field: {message}",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string LoadingApp()
+        {
+            return _language switch
+            {
+                "hr" => $"Pripremamo sve za Vas...",
+                "en" => $"Setting everything up for you...",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+    } 
 }

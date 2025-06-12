@@ -5,12 +5,21 @@ namespace WorldCupData.Service
 {
     public class SettingsService
     {
-        private static readonly string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "settings.txt");
+        private static readonly string FilePath = PathHelper.GetSettingsPath();
         public bool WasLoaded { get; private set; } = false;
 
         public void Save()
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
+            var filePath = Path.GetFullPath(FilePath);
+            if (filePath == null)
+                throw new InvalidOperationException("Could not get file path to save the app settings!");
+
+            // ✅ FIX: Get the directory of the file path
+            string directory = Path.GetDirectoryName(filePath);
+            if (directory == null)
+                throw new InvalidOperationException("Could not determine directory from file path!");
+
+            Directory.CreateDirectory(directory); // ✅ now creating a folder
             File.WriteAllText(FilePath, $"language={AppSettings.Language}\nchampionship={AppSettings.Championship}\ndataMode={AppSettings.DataSourceMode}\ndisplayMode={AppSettings.DisplayMode}");
         }
 

@@ -1,7 +1,8 @@
 ﻿<Window x:Class="WorldCupWPF.Views.StartupWindow"  
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
-       xmlns:vm="clr-namespace:WorldCupWPF.ViewModels"  
+       xmlns:vm="clr-namespace:WorldCupWPF.ViewModels"
+       xmlns:local="clr-namespace:WorldCupWPF.Controls"
        Title="Startup" Height="401" Width="500"  
        WindowStartupLocation="CenterScreen"  
        KeyDown="Window_KeyDown">
@@ -53,6 +54,6 @@
             Command="{Binding CancelCommand}"
             Margin="0,0,0,0"/>
         </StackPanel>
-
+        <local:LoadingSpinnerControl x:Name="spinner" Visibility="Collapsed"/>
     </Grid>
 </Window>

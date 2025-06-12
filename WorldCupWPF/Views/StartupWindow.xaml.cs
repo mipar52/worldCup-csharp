@@ -39,11 +39,13 @@ namespace WorldCupWPF.Views
 
                         ChangeLanguageStrings();
                         vm.Championships = new() { LanguageService.SetMenWorldChampion(), LanguageService.SetWomenWorldChampion() };
-                        vm.DisplayModes = new() { "1024x768", "1366x768", "1920x1080", LanguageService.FullScreen() };
+                        vm.DisplayModes = new() { "1250x768", "1366x768", "1920x1080", LanguageService.FullScreen() };
                     };
 
                     vm.OnConfirmed += () =>
                     {
+                        spinner.Message = LanguageService.LoadingApp();
+                        spinner.Visibility = Visibility.Visible;
                         var mainWindow = new MainWindow();
 
                         if (AppSettings.DisplayMode == LanguageService.FullScreen())
@@ -54,8 +56,8 @@ namespace WorldCupWPF.Views
                         {
                             switch (AppSettings.DisplayMode)
                             {
-                                case "1024x768":
-                                    mainWindow.Width = 1024;
+                                case "1250x768":
+                                    mainWindow.Width = 1250;
                                     mainWindow.Height = 768;
                                     break;
                                 case "1366x768":
@@ -72,7 +74,7 @@ namespace WorldCupWPF.Views
                         mainWindow.WindowStyle = WindowStyle.SingleBorderWindow;
                         Application.Current.MainWindow = mainWindow;
                         mainWindow.Show();
-
+                        spinner.Visibility = Visibility.Collapsed;
                         this.Close();
                     };
 

@@ -16,7 +16,7 @@ namespace WorldCupWPF.ViewModels
     {
         public ObservableCollection<string> Languages { get; } = new() { "English", "Croatian" };
         public ObservableCollection<string> Championships { get; set; } = new() { LanguageService.SetMenWorldChampion(), LanguageService.SetWomenWorldChampion() };
-        public ObservableCollection<string> DisplayModes { get; set; } = new() { "1024x768", "1366x768", "1920x1080", LanguageService.FullScreen() };
+        public ObservableCollection<string> DisplayModes { get; set; } = new() { "1250x768", "1366x768", "1920x1080", LanguageService.FullScreen() };
         private SettingsService settings = new SettingsService();
 
         private string _selectedLanguage;
@@ -99,7 +99,7 @@ namespace WorldCupWPF.ViewModels
             Championships.Add(LanguageService.SetMenWorldChampion());
             Championships.Add(LanguageService.SetWomenWorldChampion());
             DisplayModes.Clear();
-            DisplayModes.Add("1024x768");
+            DisplayModes.Add("1250x768");
             DisplayModes.Add("1366x768");
             DisplayModes.Add("1920x1080");
             DisplayModes.Add(LanguageService.FullScreen());

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="150" d:DesignWidth="110">
+             d:DesignHeight="100" Width="198">
 
     <UserControl.Resources>
         <Style x:Key="HoverBorderStyle" TargetType="Border">
@@ -55,19 +55,29 @@
     </UserControl.Resources>
 
     <Border Style="{StaticResource HoverBorderStyle}"
-            BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="3" Background="{Binding Background, RelativeSource={RelativeSource AncestorType=UserControl}}">
-        <StackPanel HorizontalAlignment="Center" MaxWidth="85">
-            <Image x:Name="imgPlayer" Width="50" Height="50" Stretch="Uniform" Margin="0,0,0,3"/>
-            <TextBlock x:Name="txtPlayerName"
+        BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="5"
+        Background="{Binding Background, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" MaxWidth="200">
+            <!-- Image on the left -->
+            <Image x:Name="imgPlayer" Width="50" Height="50" Stretch="UniformToFill" Margin="0,0,10,0"/>
+
+            <!-- Text on the right -->
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock x:Name="txtPlayerName"
                        Text="Name"
-                       FontWeight="Bold"
-                       FontSize="11"
-                       TextAlignment="Center"
                        TextWrapping="Wrap"
+                       FontWeight="Bold"
+                       FontSize="12"
                        TextTrimming="CharacterEllipsis"
-                       MaxWidth="80" Width="87"/>
-            <TextBlock x:Name="txtPlayerNumber" Text="#10" FontSize="11" TextAlignment="Center"/>
-            <TextBlock x:Name="txtPlayerPosition" Text="Forward" FontSize="11" TextAlignment="Center"/>
+                       Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                <TextBlock x:Name="txtPlayerNumber"
+                       Text="#10"
+                       FontSize="11"/>
+                <TextBlock x:Name="txtPlayerPosition"
+                       Text="Forward"
+                       FontSize="11"/>
+            </StackPanel>
         </StackPanel>
     </Border>
+
 </UserControl>

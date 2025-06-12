@@ -13,7 +13,7 @@ namespace WorldCupData.Converter
     {
         public override bool CanConvert(Type t) => t == typeof(TypeOfEvent) || t == typeof(TypeOfEvent?);
 
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type t, object? existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
@@ -39,7 +39,7 @@ namespace WorldCupData.Converter
             throw new Exception("Cannot unmarshal type TypeOfEvent");
         }
 
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)
         {
             if (untypedValue == null)
             {
@@ -84,7 +84,7 @@ namespace WorldCupData.Converter
     {
         public override bool CanConvert(Type t) => t == typeof(Position) || t == typeof(Position?);
 
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type t, object? existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
@@ -102,7 +102,7 @@ namespace WorldCupData.Converter
             throw new Exception("Cannot unmarshal type Position");
         }
 
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)
         {
             if (untypedValue == null)
             {

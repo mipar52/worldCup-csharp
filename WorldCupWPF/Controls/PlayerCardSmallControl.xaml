@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="WorldCupWPF.Controls.PlayerCardSmallControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="60" Width="175">
+
+    <UserControl.Resources>
+        <Style x:Key="HoverBorderStyle" TargetType="Border">
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="0" ShadowDepth="0" Opacity="0"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.1" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.1" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)" To="10" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)" To="0.5" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)" To="0" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)" To="0" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource HoverBorderStyle}"
+            BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="5"
+            Background="{Binding Background, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="-20,0,-10,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" MaxWidth="175">
+            <!-- Player image -->
+            <Image x:Name="imgPlayer"
+                   Width="40" Height="40"
+                   Stretch="UniformToFill"
+                   Margin="0,0,10,0"/>
+
+            <!-- Player name only -->
+            <TextBlock x:Name="txtPlayerName"
+                       Text="Player Name"
+                       TextWrapping="Wrap"
+                       FontWeight="Bold"
+                       FontSize="10"
+                       TextAlignment="Left"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       MaxWidth="110"/>
+        </StackPanel>
+    </Border>
+</UserControl>

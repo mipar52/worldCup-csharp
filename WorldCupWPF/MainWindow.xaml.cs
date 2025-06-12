@@ -22,24 +22,41 @@ namespace WorldCupWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly Random _rand = new();
+
         public MainWindow()
         {
             InitializeComponent();
             ChangeLanguageStrings();
             if (DataContext is MainViewModel vm)
             {
-                    _ = vm.LoadTeamsAsync();
                 vm.PropertyChanged += Vm_PropertyChanged;
 
                 vm.MatchLoaded += () =>
                 {
+                    spinner.Message = LanguageService.RenderingField();
+                    spinner.Visibility = Visibility.Visible;
                     Dispatcher.Invoke(() =>
                     {
                         Debug.WriteLine($"Home Team Events Count: {vm.HomeTeamEvents?.Count}");
                         Debug.WriteLine($"Away Team Events Count: {vm.AwayTeamEvents?.Count}");
 
-                        fieldLayoutControl.HomeTeamEvents = vm.HomeTeamEvents;
-                        fieldLayoutControl.AwayTeamEvents = vm.AwayTeamEvents;
+                        if (vm.HomeTeamEvents == null || vm.AwayTeamEvents == null)
+                        {
+                            MessageBox.Show(
+                                LanguageService.ErrorRendering("No home team or away team selected"),
+                                LanguageService.Warning(),
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning
+                            );
+                            spinner.Visibility = Visibility.Collapsed;
+                            return;
+                        } else
+                        {
+                            fieldLayoutControl.HomeTeamEvents = vm.HomeTeamEvents;
+                            fieldLayoutControl.AwayTeamEvents = vm.AwayTeamEvents;
+                        }
+
                     });
                 };
             }
@@ -76,8 +93,11 @@ namespace WorldCupWPF
             {
                 vm.OnConfirmed += () =>
                 {
+                    spinner.Message = LanguageService.LoadingApp();
+                    spinner.Visibility = Visibility.Visible;
                     ApplySettings();
                     settingsWindow.Close();
+                    spinner.Visibility = Visibility.Collapsed;
                 };
             }
 
@@ -87,35 +107,43 @@ namespace WorldCupWPF
 
         private void ApplySettings()
         {
-            // Apply display mode
-            if (AppSettings.DisplayMode == LanguageService.FullScreen())
+            try
             {
-                WindowStyle = WindowStyle.None;
-                WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                WindowStyle = WindowStyle.SingleBorderWindow;
-                WindowState = WindowState.Normal;
-
-                switch (AppSettings.DisplayMode)
+                if (AppSettings.DisplayMode == LanguageService.FullScreen())
                 {
-                    case "1024x768":
-                        Width = 1024;
-                        Height = 768;
-                        break;
-                    case "1366x768":
-                        Width = 1366;
-                        Height = 768;
-                        break;
-                    case "1920x1080":
-                        Width = 1920;
-                        Height = 1080;
-                        break;
+                    WindowStyle = WindowStyle.None;
+                    WindowState = WindowState.Maximized;
                 }
+                else
+                {
+                    WindowStyle = WindowStyle.SingleBorderWindow;
+                    WindowState = WindowState.Normal;
+
+                    switch (AppSettings.DisplayMode)
+                    {
+                        case "1250x768":
+                            Width = 1250;
+                            Height = 768;
+                            break;
+                        case "1366x768":
+                            Width = 1366;
+                            Height = 768;
+                            break;
+                        case "1920x1080":
+                            Width = 1920;
+                            Height = 1080;
+                            break;
+                    }
+                }
+
+                ChangeLanguageStrings();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error applying settings: {ex.Message}");
+                MessageBox.Show(LanguageService.ErrorApplyingSettings(), LanguageService.Warning(), MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            ChangeLanguageStrings();
         }
 
 
@@ -127,13 +155,28 @@ namespace WorldCupWPF
                 {
                     Dispatcher.Invoke(() =>
                     {
+                        spinner.Message = LanguageService.RenderingField();
+                        spinner.Visibility = Visibility.Visible;
                         AnimateMatchResult();
 
                         Debug.WriteLine($"Home Team Events Count: {vm.HomeTeamEvents?.Count}");
                         Debug.WriteLine($"Home Team Events Count: {vm.AwayTeamEvents?.Count}");
+                        if (vm.HomeTeamEvents == null || vm.AwayTeamEvents == null)
+                        {
+                            MessageBox.Show(
+                                LanguageService.ErrorRendering("No home team or away team selected"),
+                                LanguageService.Warning(),
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning
+                            );
+                            spinner.Visibility = Visibility.Collapsed;
+                        } else
+                        {
+                            fieldLayoutControl.HomeTeamEvents = vm.HomeTeamEvents;
+                            fieldLayoutControl.AwayTeamEvents = vm.AwayTeamEvents;
+                        }
+                        spinner.Visibility = Visibility.Collapsed;
 
-                        fieldLayoutControl.HomeTeamEvents = vm.HomeTeamEvents;
-                        fieldLayoutControl.AwayTeamEvents = vm.AwayTeamEvents;
                     });
                 }
             }
@@ -160,6 +203,62 @@ namespace WorldCupWPF
             sb.Children.Add(scaleY);
 
             sb.Begin();
+
+            LaunchConfetti();
+        }
+
+        private void LaunchConfetti()
+        {
+            int confettiCount = 25;
+
+            for (int i = 0; i < confettiCount; i++)
+            {
+                var shape = new Rectangle
+                {
+                    Width = _rand.Next(6, 12),
+                    Height = _rand.Next(6, 12),
+                    Fill = new SolidColorBrush(Color.FromRgb(
+                        (byte)_rand.Next(50, 256),
+                        (byte)_rand.Next(50, 256),
+                        (byte)_rand.Next(50, 256)))
+                };
+
+                double startX = _rand.NextDouble() * ConfettiCanvas.ActualWidth;
+                double endY = ConfettiCanvas.ActualHeight + 30;
+
+                Canvas.SetLeft(shape, startX);
+                Canvas.SetTop(shape, -20);
+
+                ConfettiCanvas.Children.Add(shape);
+
+                var fall = new DoubleAnimation
+                {
+                    From = -20,
+                    To = endY,
+                    Duration = TimeSpan.FromSeconds(_rand.NextDouble() * 1 + 1),
+                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                };
+
+                var fade = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    BeginTime = TimeSpan.FromSeconds(1),
+                    Duration = TimeSpan.FromSeconds(1)
+                };
+
+                Storyboard.SetTarget(fall, shape);
+                Storyboard.SetTargetProperty(fall, new PropertyPath("(Canvas.Top)"));
+
+                Storyboard.SetTarget(fade, shape);
+                Storyboard.SetTargetProperty(fade, new PropertyPath("Opacity"));
+
+                var sb = new Storyboard();
+                sb.Children.Add(fall);
+                sb.Children.Add(fade);
+                sb.Completed += (s, e) => ConfettiCanvas.Children.Remove(shape);
+                sb.Begin();
+            }
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -178,14 +277,12 @@ namespace WorldCupWPF
                     Application.Current.Shutdown();
                 }
 
-                // Prevent further propagation if needed
                 e.Handled = true;
             }
+            else if (e.Key == Key.S)
+            {
+                BtnSettings.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
         }
-
-
-
     }
-
-
 }

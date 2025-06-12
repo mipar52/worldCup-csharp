@@ -15,7 +15,7 @@ namespace WorldCupData.Service
         public static DataSourceMode DataSourceMode { get; set; }
 
         // for WPF app only
-        public static string DisplayMode { get; set; }
+        public static string DisplayMode { get; set; } = LanguageService.FullScreen();
 
     }
 }

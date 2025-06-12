@@ -19,8 +19,11 @@ namespace WorldCupData.Service
 
             string FilePath = PathHelper.GetFavoritesFilePath(type);
 
+            var dirName = Path.GetDirectoryName(FilePath);
+            if (dirName == null)
+                throw new DirectoryNotFoundException("Could not find the directory for favorites file.");
 
-            Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
+            Directory.CreateDirectory(dirName);
             string content = $"team={teamCode}\nplayers={string.Join(",", playerNames)}";
             File.WriteAllText(FilePath, content);
         }

@@ -1,0 +1,4 @@
+language=hr
+championship=Men
+dataMode=Api
+displayMode=1250x768

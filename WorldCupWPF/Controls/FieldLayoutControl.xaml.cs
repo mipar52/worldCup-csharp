@@ -27,12 +27,10 @@ namespace WorldCupWPF.Controls
     /// </summary>
     public partial class FieldLayoutControl : UserControl
     {
-        private static readonly Random _random = new Random();
-
         public FieldLayoutControl()
         {
             InitializeComponent();
-            string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "worldcup.sfg.io", "men", "Images", "field.jpg");
+            string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", "worldcup.sfg.io", "men", "Images", "field2.png");
             if (File.Exists(imagePath))
             {
                 var bitmap = new BitmapImage(new Uri(imagePath, UriKind.Absolute));
@@ -95,10 +93,21 @@ namespace WorldCupWPF.Controls
 
         private void RenderPlayers()
         {
-            FieldCanvas.Children.Clear();
+            spinner.Message = LanguageService.RenderingField();
+            spinner.Visibility = Visibility.Visible;
+            try
+            {
+                FieldCanvas.Children.Clear();
 
-            RenderTeam(HomeTeamPlayers, isHomeTeam: true);
-            RenderTeam(AwayTeamPlayers, isHomeTeam: false);
+                RenderTeam(HomeTeamPlayers, isHomeTeam: true);
+                RenderTeam(AwayTeamPlayers, isHomeTeam: false);
+                spinner.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                spinner.Visibility = Visibility.Collapsed;
+                MessageBox.Show(LanguageService.ErrorRendering(ex.Message), LanguageService.Warning(), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void RenderTeam(IEnumerable<StartingEleven> players, bool isHomeTeam)
@@ -110,11 +119,36 @@ namespace WorldCupWPF.Controls
             // Define X-lanes for each position
             double fieldWidth = FieldCanvas.ActualWidth;
             double fieldHeight = FieldCanvas.ActualHeight;
+            bool useSmallCard = fieldWidth < 900 || fieldHeight < 600;
 
-            double goalieX = isHomeTeam ? 60 : fieldWidth - 130;
-            double defenderX = isHomeTeam ? 190 : fieldWidth - 290;
-            double midfieldX = isHomeTeam ? fieldWidth / 2 - 100 : fieldWidth / 2 + 100;
-            double forwardX = isHomeTeam ? fieldWidth - 400 : 300;
+            double marginX = fieldWidth * 0.05;
+            double marginY = fieldHeight * 0.05;
+            double usableWidth = fieldWidth - 2 * marginX;
+            double usableHeight = fieldHeight - 2 * marginY;
+
+            // Corrected spacing based on your new rules
+            double goalieX = isHomeTeam
+                ? marginX + usableWidth * 0.02
+                : marginX + usableWidth * 0.9;
+
+            double defenderX = isHomeTeam
+                ? marginX + usableWidth * 0.12
+                : marginX + usableWidth * 0.80;
+
+            double midfieldX = isHomeTeam
+                ? marginX + usableWidth * 0.25
+                : marginX + usableWidth * 0.68;
+
+            double forwardX = isHomeTeam
+                ? marginX + usableWidth * 0.38
+                : marginX + usableWidth * 0.55;
+
+
+
+
+            //  double forwardX = isHomeTeam ? (defenderX + midfieldX) / 2 + 0.2 : (defenderX + midfieldX) / 2 - 0.2;
+
+
 
             Dictionary<WorldCupData.Enums.Position, double> xByPosition = new()
             {
@@ -130,116 +164,81 @@ namespace WorldCupWPF.Controls
                 var linePlayers = kvp.Value;
 
                 double x = xByPosition[position];
-
-                // Dynamic vertical layout
-                double cardHeight = 110;
-                double padding = 20;
-                double availableHeight = fieldHeight - 2 * padding;
                 int count = linePlayers.Count;
-                double spacing = count > 1
-                    ? Math.Min(140, availableHeight / (count - 1))
-                    : 0;
 
-                double totalHeight = spacing * (count - 1);
-                double startY = (fieldHeight - totalHeight - cardHeight) / 2;
+                double cardWidth = useSmallCard
+                    ? Math.Clamp(fieldWidth * 0.06, 40, 85)
+                    : Math.Clamp(fieldWidth * 0.08, 70, 160); // increased max from 140 → 160
+
+
+                double cardHeight = useSmallCard
+                    ? Math.Clamp(fieldHeight * 0.10, 60, 110)
+                    : Math.Clamp(fieldHeight * 0.15, 90, 200);
+
+                // 1. Base spacing multiplier depending on card size
+                double spacingMultiplier = useSmallCard ? 1.01 : 1.01;
+
+                // 2. Apply multiplier
+                double baseSpacing = cardHeight * spacingMultiplier;
+
+                // 3. Calculate available spacing based on field height
+                double maxFittableSpacing = (usableHeight - cardHeight) / count;
+
+                // 4. Final spacing = min of baseSpacing and max allowed
+                double spacing = Math.Max(Math.Min(baseSpacing, maxFittableSpacing), 10); // never less than 10px
+
+
+
+                double startY = marginY + (usableHeight - ((count - 1) * spacing + cardHeight)) / 2;
 
                 for (int i = 0; i < count; i++)
                 {
                     var player = linePlayers[i];
-                    var card = new PlayerCardControl(player);
+                    UserControl card = useSmallCard
+                        ? new PlayerCardSmallControl(player)
+                        : new PlayerCardControl(player);
+
                     int goals = 0;
                     int yellowCards = 0;
                     int goalsOwn = 0;
                     var color = new SolidColorBrush(Colors.White);
-                    if (isHomeTeam && HomeTeamEvents != null)
+
+                    var events = isHomeTeam ? HomeTeamEvents : AwayTeamEvents;
+
+                    if (events != null)
                     {
-                        goals = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.Goal);
-                        yellowCards = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.YellowCard);
-                        goalsOwn = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.GoalOwn);
+                        goals = events.Count(ev => ev.Player == player.Name && (ev.TypeOfEvent == TypeOfEvent.Goal || ev.TypeOfEvent == TypeOfEvent.GoalPenalty));
+                        yellowCards = events.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.YellowCard);
+                        goalsOwn = events.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.GoalOwn);
+
                         if (goals > 0)
-                        {
                             color = new SolidColorBrush(Colors.LightGreen);
-                        }
                         else if (yellowCards > 0)
-                        {
                             color = new SolidColorBrush(Colors.Yellow);
-                        }
                         else if (goalsOwn > 0)
-                        {
                             color = new SolidColorBrush(Colors.IndianRed);
-                        }
-                        
-                        if (!isHomeTeam && AwayTeamEvents != null)
-                        {
-                            goals = AwayTeamEvents.Count(ev => ev.Player == player.Name && (ev.TypeOfEvent == TypeOfEvent.Goal || ev.TypeOfEvent == TypeOfEvent.GoalPenalty));
-                            yellowCards = AwayTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.YellowCard);
-                            goalsOwn = HomeTeamEvents.Count(ev => ev.Player == player.Name && ev.TypeOfEvent == TypeOfEvent.GoalOwn);
-                            if (goals > 0)
-                            {
-                                color = new SolidColorBrush(Colors.LightGreen);
-                            }
-                            else if (yellowCards > 0)
-                            {
-                                color = new SolidColorBrush(Colors.Yellow);
-                            }
-                            else if (goalsOwn > 0)
-                            {
-                                color = new SolidColorBrush(Colors.IndianRed);
-                            }
-                        }
-                    }
-                    card.PlayerClicked += (s, p) =>
-                    {
-
-
-                        var window = new PlayerInfoWindow(p, goals, yellowCards);
-                        window.ShowDialog();
-                    };
-
-                    double y = startY + i * spacing;
-                    double adjustedX = x;
-
-                    // If 5 or more players, stagger players beyond the 4th
-                    if (count > 4 && i >= 4)
-                    {
-                        y -= _random.Next(180, 200) * (i - 3); // move upward
-                        adjustedX += isHomeTeam ? _random.Next(100, 150) * (i - 3) : _random.Next(-150, -100) * (i - 3); // move sideways
                     }
 
-                    Canvas.SetLeft(card, adjustedX);
-                    Canvas.SetTop(card, y);
-                    card.ToolTip = $"{LanguageService.Goals}: {goals}, {LanguageService.YellowCards}: {yellowCards}";
+                    if (card is PlayerCardControl largeCard)
+                        largeCard.PlayerClicked += (s, p) => new PlayerInfoWindow(p, goals, yellowCards).ShowDialog();
+                    else if (card is PlayerCardSmallControl smallCard)
+                        smallCard.PlayerClicked += (s, p) => new PlayerInfoWindow(p, goals, yellowCards).ShowDialog();
+
+                    double xPos = Math.Clamp(x, 0, fieldWidth - cardWidth);
+                    double yPos = Math.Clamp(startY + i * spacing, 0, fieldHeight - cardHeight);
+
+                    card.Width = cardWidth;
+                  //  card.Height = cardHeight;
+                    card.ToolTip = $"{LanguageService.Goals()}: {goals}, {LanguageService.YellowCards()}: {yellowCards}";
                     card.Background = color;
+
+                    Canvas.SetLeft(card, xPos);
+                    Canvas.SetTop(card, yPos);
+
                     FieldCanvas.Children.Add(card);
                 }
             }
-        }
 
-
-
-
-
-        private (double x, double y) GetPositionForPlayer(StartingEleven player, int index, bool isHomeTeam)
-        {
-            double fieldWidth = FieldCanvas.ActualWidth;
-            double spacingX = 80;
-            double spacingY = 70;
-
-            // Horizontal spacing
-            double baseX = isHomeTeam ? 150 : fieldWidth - 850;
-            double x = baseX + index * spacingX;
-
-            // Vertical based on position (bottom-up)
-            double y = player.Position switch
-            {
-                WorldCupData.Enums.Position.Goalie => 260,
-                WorldCupData.Enums.Position.Defender => 180,
-                WorldCupData.Enums.Position.Midfield => 100,
-                WorldCupData.Enums.Position.Forward => 30,
-                _ => 180
-            };
-
-            return (x, y);
         }
     }
     }
