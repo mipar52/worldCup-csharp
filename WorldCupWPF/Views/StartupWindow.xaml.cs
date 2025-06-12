@@ -39,7 +39,7 @@ namespace WorldCupWPF.Views
 
                         ChangeLanguageStrings();
                         vm.Championships = new() { LanguageService.SetMenWorldChampion(), LanguageService.SetWomenWorldChampion() };
-                        vm.DisplayModes = new() { "1024x768", "1366x768", "1920x1080", LanguageService.FullScreen() };
+                        vm.DisplayModes = new() { "1250x768", "1366x768", "1920x1080", LanguageService.FullScreen() };
                     };
 
                     vm.OnConfirmed += () =>
@@ -54,8 +54,8 @@ namespace WorldCupWPF.Views
                         {
                             switch (AppSettings.DisplayMode)
                             {
-                                case "1024x768":
-                                    mainWindow.Width = 1024;
+                                case "1250x768":
+                                    mainWindow.Width = 1250;
                                     mainWindow.Height = 768;
                                     break;
                                 case "1366x768":

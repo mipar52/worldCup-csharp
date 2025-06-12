@@ -567,7 +567,7 @@ namespace WorldCupData.Service
             };
         }
 
-        public static string? FullScreen()
+        public static string FullScreen()
         {
             return _language switch
             {

@@ -10,12 +10,7 @@
 
   <ItemGroup>
     <None Remove="Images\field.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Images\field.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <None Remove="Images\field.png" />
   </ItemGroup>
 
   <ItemGroup>

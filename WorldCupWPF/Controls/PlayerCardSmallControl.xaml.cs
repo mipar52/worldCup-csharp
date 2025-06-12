@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -40,13 +41,38 @@ namespace WorldCupWPF.Controls
 
         private void UpdateUI()
         {
-            txtPlayerName.Text = Player.Name;
+            // Split the name on space and join with a line break
+            if (!string.IsNullOrWhiteSpace(Player.Name))
+            {
+                txtPlayerName.Text = Player.Name.Replace(" ", Environment.NewLine);
+            }
 
-            string imagePath = ImageService.GetPlayerImagePath(AppSettings.Championship, Player.Name);
-            if (File.Exists(imagePath))
-                imgPlayer.Source = new BitmapImage(new Uri(imagePath));
+            // Optional: reduce font for multi-line names
+            if (Player.Name.Contains(" "))
+            {
+                txtPlayerName.FontSize = 7; // slightly smaller to accommodate multiple lines
+            }
             else
+            {
+                txtPlayerName.FontSize = 9;
+            }
+            try
+            {
+                string? imagePath = ImageService.GetPlayerImagePath(AppSettings.Championship, Player.Name);
+                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                {
+                    imgPlayer.Source = new BitmapImage(new Uri(imagePath));
+                }
+                else
+                {
+                    imgPlayer.Source = new BitmapImage(new Uri(ImageService.GetPlaceholderImagePath(AppSettings.Championship)));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading image for {Player.Name}: {ex.Message}");
                 imgPlayer.Source = new BitmapImage(new Uri(ImageService.GetPlaceholderImagePath(AppSettings.Championship)));
+            }
         }
     }
 

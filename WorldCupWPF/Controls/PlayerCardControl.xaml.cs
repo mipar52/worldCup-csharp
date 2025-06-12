@@ -38,10 +38,13 @@ namespace WorldCupWPF.Controls
 
         private void UpdateUI()
         {
-            txtPlayerName.Text = Player.Name;
-           // txtPLayerShirtNumber.Text = $"#{Player.ShirtNumber}";
+            if (!string.IsNullOrWhiteSpace(Player.Name))
+            {
+                txtPlayerName.Text = Player.Name.Replace(" ", Environment.NewLine);
+            }
+            // txtPLayerShirtNumber.Text = $"#{Player.ShirtNumber}";
             txtPlayerPosition.Text = Player.Position.ToString();
-           // captainText.Visibility = Player.Captain ? Visibility.Visible : Visibility.Collapsed;
+            //captainText.Visibility = Player.Captain ? Visibility.Visible : Visibility.Collapsed;
 
             string imagePath = ImageService.GetPlayerImagePath(AppSettings.Championship, Player.Name);
             if (File.Exists(imagePath))

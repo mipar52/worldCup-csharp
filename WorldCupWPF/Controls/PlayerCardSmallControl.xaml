@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="75" d:DesignWidth="70">
+             d:DesignHeight="60" Width="175">
 
     <UserControl.Resources>
         <Style x:Key="HoverBorderStyle" TargetType="Border">
@@ -24,28 +24,20 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
-                                                 To="1.1" Duration="0:0:0.2"/>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
-                                                 To="1.1" Duration="0:0:0.2"/>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
-                                                 To="10" Duration="0:0:0.2"/>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
-                                                 To="0.5" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.1" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.1" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)" To="10" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)" To="0.5" Duration="0:0:0.2"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
                     <Trigger.ExitActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
-                                                 To="1.0" Duration="0:0:0.2"/>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
-                                                 To="1.0" Duration="0:0:0.2"/>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
-                                                 To="0" Duration="0:0:0.2"/>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
-                                                 To="0" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)" To="0" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)" To="0" Duration="0:0:0.2"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.ExitActions>
@@ -54,10 +46,26 @@
         </Style>
     </UserControl.Resources>
 
-    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="2" Background="{Binding Background, RelativeSource={RelativeSource AncestorType=UserControl}}" Style="{StaticResource HoverBorderStyle}">
-        <StackPanel HorizontalAlignment="Center" MaxWidth="60">
-            <Image x:Name="imgPlayer" Width="30" Height="30" Margin="0,0,0,2"/>
-            <TextBlock x:Name="txtPlayerName" FontSize="8" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="55"/>
+    <Border Style="{StaticResource HoverBorderStyle}"
+            BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="5"
+            Background="{Binding Background, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="-20,0,-10,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" MaxWidth="175">
+            <!-- Player image -->
+            <Image x:Name="imgPlayer"
+                   Width="40" Height="40"
+                   Stretch="UniformToFill"
+                   Margin="0,0,10,0"/>
+
+            <!-- Player name only -->
+            <TextBlock x:Name="txtPlayerName"
+                       Text="Player Name"
+                       TextWrapping="Wrap"
+                       FontWeight="Bold"
+                       FontSize="10"
+                       TextAlignment="Left"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       MaxWidth="110"/>
         </StackPanel>
     </Border>
 </UserControl>
