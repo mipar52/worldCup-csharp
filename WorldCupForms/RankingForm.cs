@@ -62,7 +62,7 @@ namespace WorldCupForms
             } catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading matches: {ex.Message}");
-                MessageBox.Show(LanguageService.ErrorLoadingMatches());
+                MessageBox.Show(LanguageService.ErrorLoadingMatches(ex.Message));
                 Close();
                 return;
             }

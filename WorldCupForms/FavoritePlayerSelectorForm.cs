@@ -91,7 +91,7 @@ namespace WorldCupForms
 
                 if (totalFavorites >= 3)
                 {
-                    MessageBox.Show(LanguageService.MaxThree();
+                    MessageBox.Show(LanguageService.MaxThree());
                     return;
                 }
 

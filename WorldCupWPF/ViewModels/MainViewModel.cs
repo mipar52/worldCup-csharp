@@ -128,7 +128,6 @@ namespace WorldCupWPF.ViewModels
 
                 MatchLoaded?.Invoke();
 
-                // Notify field layout to refresh
                 OnPropertyChanged(nameof(HomeTeamPlayers));
                 OnPropertyChanged(nameof(AwayTeamPlayers));
                 OnPropertyChanged(nameof(HomeStartingEleven));
@@ -139,7 +138,33 @@ namespace WorldCupWPF.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading match: {ex.Message}");
-                MessageBox.Show($"{LanguageService.Warning()}: {ex.Message}\n\n{ex.StackTrace}");
+                MessageBoxResult result = MessageBox.Show(
+                    LanguageService.LoadServiceError(ex.Message),
+                    LanguageService.Warning(),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    AppSettings.DataSourceMode = AppSettings.DataSourceMode == DataSourceMode.Api ? DataSourceMode.File : DataSourceMode.Api;
+                    
+                    try
+                    {
+                        TryLoadMatchAsync();
+                    }
+                    catch (Exception ex2)
+                    {
+                        Debug.WriteLine($"Fallback load failed: {ex2.Message}");
+
+                        MessageBox.Show(
+                            LanguageService.LoadAltServiceError(ex2.Message),
+                            LanguageService.Warning(),
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+
+                        return;
+                    }
+                }
             }
 
         }
@@ -170,8 +195,34 @@ namespace WorldCupWPF.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error loading teams: {ex.Message}");
-                MessageBox.Show($"{LanguageService.Warning()}: {ex.Message}\n\n{ex.StackTrace}");
+                Debug.WriteLine($"Error loading match: {ex.Message}");
+                MessageBoxResult result = MessageBox.Show(
+                    LanguageService.LoadServiceError(ex.Message),
+                    LanguageService.Warning(),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    AppSettings.DataSourceMode = AppSettings.DataSourceMode == DataSourceMode.Api ? DataSourceMode.File : DataSourceMode.Api;
+
+                    try
+                    {
+                        await LoadTeamsAsync();
+                    }
+                    catch (Exception ex2)
+                    {
+                        Debug.WriteLine($"Fallback load failed: {ex2.Message}");
+
+                        MessageBox.Show(
+                            LanguageService.LoadAltServiceError(ex2.Message),
+                            LanguageService.Warning(),
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+
+                        return;
+                    }
+                }
             }
         }
 
