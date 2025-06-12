@@ -39,6 +39,7 @@ A modern, interactive C# desktop application that visualizes FIFA World Cup data
 
 ## Project structure
 
+```
 /WorldCupProject
 │
 ├── WorldCupData/ # Shared models, enums, data access
@@ -59,6 +60,7 @@ A modern, interactive C# desktop application that visualizes FIFA World Cup data
 │ └── App.xaml
 │
 └── README.md
+```
 
 ## Getting Started
 
