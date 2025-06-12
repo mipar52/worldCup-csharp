@@ -1,4 +1,4 @@
 language=hr
 championship=Men
 dataMode=File
-displayMode=Fullscreen
+displayMode=1250x768

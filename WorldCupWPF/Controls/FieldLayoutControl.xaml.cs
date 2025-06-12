@@ -27,8 +27,6 @@ namespace WorldCupWPF.Controls
     /// </summary>
     public partial class FieldLayoutControl : UserControl
     {
-        private static readonly Random _random = new Random();
-
         public FieldLayoutControl()
         {
             InitializeComponent();
@@ -95,10 +93,21 @@ namespace WorldCupWPF.Controls
 
         private void RenderPlayers()
         {
-            FieldCanvas.Children.Clear();
+            spinner.Message = LanguageService.RenderingField();
+            spinner.Visibility = Visibility.Visible;
+            try
+            {
+                FieldCanvas.Children.Clear();
 
-            RenderTeam(HomeTeamPlayers, isHomeTeam: true);
-            RenderTeam(AwayTeamPlayers, isHomeTeam: false);
+                RenderTeam(HomeTeamPlayers, isHomeTeam: true);
+                RenderTeam(AwayTeamPlayers, isHomeTeam: false);
+                spinner.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                spinner.Visibility = Visibility.Collapsed;
+                MessageBox.Show(LanguageService.ErrorRendering(ex.Message), LanguageService.Warning(), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void RenderTeam(IEnumerable<StartingEleven> players, bool isHomeTeam)
@@ -230,33 +239,6 @@ namespace WorldCupWPF.Controls
                 }
             }
 
-        }
-
-
-
-
-
-        private (double x, double y) GetPositionForPlayer(StartingEleven player, int index, bool isHomeTeam)
-        {
-            double fieldWidth = FieldCanvas.ActualWidth;
-            double spacingX = 80;
-            double spacingY = 70;
-
-            // Horizontal spacing
-            double baseX = isHomeTeam ? 150 : fieldWidth - 850;
-            double x = baseX + index * spacingX;
-
-            // Vertical based on position (bottom-up)
-            double y = player.Position switch
-            {
-                WorldCupData.Enums.Position.Goalie => 260,
-                WorldCupData.Enums.Position.Defender => 180,
-                WorldCupData.Enums.Position.Midfield => 100,
-                WorldCupData.Enums.Position.Forward => 30,
-                _ => 180
-            };
-
-            return (x, y);
         }
     }
     }

@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using WorldCupData.Model;
 using WorldCupData.Service;
+using WorldCupWPF.Controls;
 using WorldCupWPF.Utils;
 using WorldCupWPF.Views;
 
@@ -81,58 +82,66 @@ namespace WorldCupWPF.ViewModels
 
         private async void TryLoadMatchAsync()
         {
-            if (SelectedTeam == null || SelectedOpponentCode == null)
-                return;
-
-            HomeStartingEleven.Clear();
-            AwayStartingEleven.Clear();
-
-            var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, AppSettings.DataSourceMode, SelectedTeam.Team.FifaCode);
-            var match = matches.FirstOrDefault(m =>
-                (m.HomeTeam.Code == SelectedTeam.Team.FifaCode && m.AwayTeam.Code == SelectedOpponentCode.Team.FifaCode) ||
-                (m.AwayTeam.Code == SelectedTeam.Team.FifaCode && m.HomeTeam.Code == SelectedOpponentCode.Team.FifaCode));
-
-            if (match == null)
+            try
             {
-                MatchResult = "Match not found.";
-                return;
+                
+                if (SelectedTeam == null || SelectedOpponentCode == null)
+                    return;
+
+                HomeStartingEleven.Clear();
+                AwayStartingEleven.Clear();
+
+                var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, AppSettings.DataSourceMode, SelectedTeam.Team.FifaCode);
+                if (matches == null)
+                {
+                    MatchResult = LanguageService.NoMatchesFound();
+                    return;
+                }
+
+                var match = matches.FirstOrDefault(m =>
+                    (m.HomeTeam.Code == SelectedTeam.Team.FifaCode && m.AwayTeam.Code == SelectedOpponentCode.Team.FifaCode) ||
+                    (m.AwayTeam.Code == SelectedTeam.Team.FifaCode && m.HomeTeam.Code == SelectedOpponentCode.Team.FifaCode));
+
+                if (match == null)
+                {
+                    MatchResult = LanguageService.NoMatchesFound();
+                    return;
+                }
+
+                // Match Result
+                MatchResult = match.HomeTeam.Code == SelectedTeam.Team.FifaCode
+                    ? $"{match.HomeTeam.Goals} : {match.AwayTeam.Goals}"
+                    : $"{match.AwayTeam.Goals} : {match.HomeTeam.Goals}";
+
+                // Team Events
+                HomeTeamEvents = match.HomeTeamEvents?.ToList() ?? new List<TeamEvent>();
+                AwayTeamEvents = match.AwayTeamEvents?.ToList() ?? new List<TeamEvent>();
+
+                // Players
+                if (match.HomeTeamStatistics?.StartingEleven != null)
+                    foreach (var p in match.HomeTeamStatistics.StartingEleven)
+                        HomeStartingEleven.Add(p);
+
+                if (match.AwayTeamStatistics?.StartingEleven != null)
+                    foreach (var p in match.AwayTeamStatistics.StartingEleven)
+                        AwayStartingEleven.Add(p);
+
+                MatchLoaded?.Invoke();
+
+                // Notify field layout to refresh
+                OnPropertyChanged(nameof(HomeTeamPlayers));
+                OnPropertyChanged(nameof(AwayTeamPlayers));
+                OnPropertyChanged(nameof(HomeStartingEleven));
+                OnPropertyChanged(nameof(AwayStartingEleven));
+                OnPropertyChanged(nameof(HomeTeamEvents));
+                OnPropertyChanged(nameof(AwayTeamEvents));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading match: {ex.Message}");
+                MessageBox.Show($"{LanguageService.Warning()}: {ex.Message}\n\n{ex.StackTrace}");
             }
 
-
-
-            // Match Result
-            MatchResult = match.HomeTeam.Code == SelectedTeam.Team.FifaCode
-                ? $"{match.HomeTeam.Goals} : {match.AwayTeam.Goals}"
-                : $"{match.AwayTeam.Goals} : {match.HomeTeam.Goals}";
-            // Team Events
-            
-            HomeTeamEvents = match.HomeTeamEvents.ToList();
-            AwayTeamEvents = match.AwayTeamEvents.ToList();
-            Debug.WriteLine($"Home Team Events Count direct: {HomeTeamEvents.Count}");
-            // Players
-            if (match.HomeTeamStatistics?.StartingEleven != null)
-                foreach (var p in match.HomeTeamStatistics.StartingEleven)
-                {
-                    HomeStartingEleven.Add(p);
-                    HomeTeamPlayers.Add(p);
-                }
-
-
-            if (match.AwayTeamStatistics?.StartingEleven != null)
-                foreach (var p in match.AwayTeamStatistics.StartingEleven)
-                {
-                    AwayStartingEleven.Add(p);
-                    AwayTeamPlayers.Add(p);
-                }
-            MatchLoaded?.Invoke();
-
-            // Notify field layout to refresh
-            OnPropertyChanged(nameof(HomeTeamPlayers));
-            OnPropertyChanged(nameof(AwayTeamPlayers));
-            OnPropertyChanged(nameof(HomeStartingEleven));
-            OnPropertyChanged(nameof(AwayStartingEleven));
-            OnPropertyChanged(nameof(HomeTeamEvents));
-            OnPropertyChanged(nameof(AwayTeamEvents));
         }
 
 
@@ -162,7 +171,7 @@ namespace WorldCupWPF.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading teams: {ex.Message}");
-                MessageBox.Show($"Error: {ex.Message}\n\n{ex.StackTrace}");
+                MessageBox.Show($"{LanguageService.Warning()}: {ex.Message}\n\n{ex.StackTrace}");
             }
         }
 
@@ -193,44 +202,6 @@ namespace WorldCupWPF.ViewModels
 
             OnPropertyChanged(nameof(OpponentOptions));
         }
-
-
-        private async Task LoadMatchResultAsync()
-            {
-                if (SelectedTeam == null || SelectedOpponentCode == null) return;
-
-                var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, AppSettings.DataSourceMode, SelectedTeam.Team.FifaCode);
-                var match = matches.FirstOrDefault(m =>
-                    (m.HomeTeam.Code == SelectedTeam.Team.FifaCode && m.AwayTeam.Code == SelectedOpponentCode.Team.FifaCode) ||
-                    (m.AwayTeam.Code == SelectedTeam.Team.FifaCode && m.HomeTeam.Code == SelectedOpponentCode.Team.FifaCode));
-
-                if (match == null)
-                {
-                    MatchResult = "Match not found.";
-                    return;
-                }
-
-                if (match.HomeTeam.Code == SelectedTeam.Team.FifaCode)
-                    MatchResult = $"{match.HomeTeam.Goals} : {match.AwayTeam.Goals}";
-                else
-                    MatchResult = $"{match.AwayTeam.Goals} : {match.HomeTeam.Goals}";
-            HomeStartingEleven.Clear();
-            AwayStartingEleven.Clear();
-
-            if (match.HomeTeamStatistics?.StartingEleven != null)
-                foreach (var p in match.HomeTeamStatistics.StartingEleven)
-                    HomeStartingEleven.Add(p);
-
-            if (match.AwayTeamStatistics?.StartingEleven != null)
-                foreach (var p in match.AwayTeamStatistics.StartingEleven)
-                    AwayStartingEleven.Add(p);
-
-            OnPropertyChanged(nameof(HomeTeamPlayers));
-            OnPropertyChanged(nameof(AwayTeamPlayers));
-
-        }
-
-
         private void ExecuteShowTeamInfo()
         {
             if (SelectedTeam == null) return;

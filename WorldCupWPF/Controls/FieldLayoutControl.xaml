@@ -16,5 +16,6 @@
                 Background="{StaticResource FieldBackground}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch" />
+        <local:LoadingSpinnerControl x:Name="spinner" Visibility="Collapsed"/>
     </Grid>
 </UserControl>

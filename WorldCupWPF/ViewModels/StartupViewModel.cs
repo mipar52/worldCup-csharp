@@ -99,7 +99,7 @@ namespace WorldCupWPF.ViewModels
             Championships.Add(LanguageService.SetMenWorldChampion());
             Championships.Add(LanguageService.SetWomenWorldChampion());
             DisplayModes.Clear();
-            DisplayModes.Add("1024x768");
+            DisplayModes.Add("1250x768");
             DisplayModes.Add("1366x768");
             DisplayModes.Add("1920x1080");
             DisplayModes.Add(LanguageService.FullScreen());

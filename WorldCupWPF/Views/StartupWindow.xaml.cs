@@ -44,6 +44,8 @@ namespace WorldCupWPF.Views
 
                     vm.OnConfirmed += () =>
                     {
+                        spinner.Message = LanguageService.LoadingApp();
+                        spinner.Visibility = Visibility.Visible;
                         var mainWindow = new MainWindow();
 
                         if (AppSettings.DisplayMode == LanguageService.FullScreen())
@@ -72,7 +74,7 @@ namespace WorldCupWPF.Views
                         mainWindow.WindowStyle = WindowStyle.SingleBorderWindow;
                         Application.Current.MainWindow = mainWindow;
                         mainWindow.Show();
-
+                        spinner.Visibility = Visibility.Collapsed;
                         this.Close();
                     };
 

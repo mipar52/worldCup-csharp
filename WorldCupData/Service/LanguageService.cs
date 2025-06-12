@@ -831,24 +831,6 @@ namespace WorldCupData.Service
                 _ => throw new InvalidOperationException("Language not set correctly.")
             };
         }
-        public static string LoadingRankings()
-        {
-            return _language switch
-            {
-                "hr" => "Učitavam rangiranja...",
-                "en" => "Loading rankings...",
-                _ => throw new InvalidOperationException("Language not set correctly.")
-            };
-        }
-        public static string LoadingRankings()
-        {
-            return _language switch
-            {
-                "hr" => "Učitavam rangiranja...",
-                "en" => "Loading rankings...",
-                _ => throw new InvalidOperationException("Language not set correctly.")
-            };
-        }
         public static string LoadingPrintStuff()
         {
             return _language switch
@@ -859,7 +841,7 @@ namespace WorldCupData.Service
             };
         }
 
-        public static string? NoMatchesFound()
+        public static string NoMatchesFound()
         {
             return _language switch
             {
@@ -916,6 +898,46 @@ namespace WorldCupData.Service
                 _ => throw new InvalidOperationException("Language not set correctly.")
             };
             
+        }
+
+        public static string ErrorApplyingSettings()
+        {
+            return _language switch
+            {
+                "hr" => $"Nismo mogli namjestiti postavke..",
+                "en" => "Error applying settings..",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string RenderingField()
+        {
+            return _language switch
+            {
+                "hr" => $"Učitavamo igrače i polje....",
+                "en" => "Rendering teams & fields....",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string ErrorRendering(string message)
+        {
+            return _language switch
+            {
+                "hr" => $"Greška prilikom učitavanja polja: {message}",
+                "en" => $"Error rendering field: {message}",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
+
+        public static string LoadingApp()
+        {
+            return _language switch
+            {
+                "hr" => $"Pripremamo sve za Vas...",
+                "en" => $"Setting everything up for you...",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
         }
     } 
 }
