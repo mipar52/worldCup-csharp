@@ -68,7 +68,9 @@ A modern, interactive C# desktop application that visualizes FIFA World Cup data
 
 - .NET 8 SDK
 - Visual Studio 2022 or newer
-- NuGet dependencies (if any)
+- NuGet dependencies:
+  - The project uses the dependency: `Newtonsoft.Json`, a popular high-performance JSON framework for .NET to ease up the process of JSON parsing.
+  - For more information about the dependency, look [here](https://www.nuget.org/packages/newtonsoft.json/).
 
 ### Running the Application
 
