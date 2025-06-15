@@ -1,4 +1,0 @@
-language=en
-championship=Women
-dataMode=Api
-displayMode=1250x768

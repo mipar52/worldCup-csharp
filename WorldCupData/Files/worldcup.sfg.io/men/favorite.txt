@@ -1,2 +1,0 @@
-team=CRC
-players=Johnny ACOSTA,Giancarlo GONZALEZ,Keylor NAVAS

@@ -1,2 +1,0 @@
-team=AUS
-players=Clare POLKINGHORNE,Alanna KENNEDY,Lydia WILLIAMS
