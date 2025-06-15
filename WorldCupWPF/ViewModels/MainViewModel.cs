@@ -151,6 +151,7 @@ namespace WorldCupWPF.ViewModels
                     try
                     {
                         TryLoadMatchAsync();
+                        return;
                     }
                     catch (Exception ex2)
                     {
