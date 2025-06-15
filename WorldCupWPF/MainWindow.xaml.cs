@@ -106,8 +106,12 @@ namespace WorldCupWPF
             settingsWindow.ShowDialog();
         }
 
-        private void ApplySettings()
+        private async void ApplySettings()
         {
+            if (DataContext is MainViewModel vm)
+            {
+                
+            
             try
             {
                 if (AppSettings.DisplayMode == LanguageService.FullScreen())
@@ -138,13 +142,14 @@ namespace WorldCupWPF
                 }
 
                 ChangeLanguageStrings();
+               await vm.LoadTeamsAsync();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error applying settings: {ex.Message}");
                 MessageBox.Show(LanguageService.ErrorApplyingSettings(), LanguageService.Warning(), MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
+          }
         }
 
 
