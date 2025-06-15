@@ -55,6 +55,7 @@ namespace WorldCupWPF
                         {
                             fieldLayoutControl.HomeTeamEvents = vm.HomeTeamEvents;
                             fieldLayoutControl.AwayTeamEvents = vm.AwayTeamEvents;
+                            spinner.Visibility = Visibility.Collapsed;
                         }
 
                     });
