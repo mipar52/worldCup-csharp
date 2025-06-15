@@ -939,5 +939,15 @@ namespace WorldCupData.Service
                 _ => throw new InvalidOperationException("Language not set correctly.")
             };
         }
+
+        public static string? NoFavoritePlayersSelected()
+        {
+            return _language switch
+            {
+                "hr" => $"Još niste odabrali omiljene igrače! Pritisnite gumb ispod za odabiranje omiljenih igrača!",
+                "en" => $"You still haven't chosen your favorite players! Press the button below to choose your favorite players!",
+                _ => throw new InvalidOperationException("Language not set correctly.")
+            };
+        }
     } 
 }

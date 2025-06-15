@@ -1,3 +1,0 @@
-Giancarlo GONZALEZ=C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupForms\Files\worldcup.sfg.io\men\Images\Giancarlo GONZALEZ.jpeg
-Keylor NAVAS=C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupForms\Files\worldcup.sfg.io\men\Images\Keylor NAVAS.PNG
-Oscar DUARTE=C:\Users\milan\Desktop\oop_projekt\WorldCupProject\WorldCupForms\Files\worldcup.sfg.io\men\Images\Oscar DUARTE.jpg

@@ -131,7 +131,7 @@ namespace WorldCupForms
         {
             var teams = await _dataProvider.GetTeamsAsync(AppSettings.Championship, AppSettings.DataSourceMode);
             cbFavoriteTeam.Items.Clear();
-            if (teams != null) // Ensure teams is not null
+            if (teams != null)
             {
                 foreach (var team in teams)
                 {
@@ -151,7 +151,8 @@ namespace WorldCupForms
                 if (matchedItem != null)
                 {
                     cbFavoriteTeam.SelectedItem = matchedItem;
-                    await LoadFavoritePlayersAsync(savedCode);
+                    if (favorites.Value.PlayerNames != null && favorites.Value.PlayerNames.Count != 0)
+                        await LoadFavoritePlayersAsync(savedCode);
                 }
             }
         }
@@ -161,10 +162,10 @@ namespace WorldCupForms
             if (cbFavoriteTeam.SelectedItem is not string selectedText) return;
             var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingFavPlayers());
             var fifaCode = selectedText.Substring(selectedText.LastIndexOf('(') + 1).TrimEnd(')');
-            File.WriteAllText("favorite_team.txt", fifaCode);
+         //   File.WriteAllText(PathHelper.GetFavoritesFilePath(AppSettings.Championship), fifaCode);
             await LoadFavoritePlayersAsync(fifaCode);
-            loadingPanel.Dispose();
             loadingPanel.Visible = false;
+            loadingPanel.Dispose();
         }
 
         private async void btnChooseFavoritePlayers_Click(object sender, EventArgs e)
@@ -224,7 +225,13 @@ namespace WorldCupForms
                 var favoritePlayerNames = FavoriteService.Load(AppSettings.Championship);
 
                 if (favoritePlayerNames == null || favoritePlayerNames.Value.PlayerNames.Count == 0)
+                {
+                    loadingPanel.Visible = false;
+                    loadingPanel.Dispose();
+                    flpFavoritePlayers.Controls.Clear();
+                    MessageBox.Show(LanguageService.NoFavoritePlayersSelected(), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
+                }
 
                 var matches = await _dataProvider.GetMatchesByCountryAsync(AppSettings.Championship, AppSettings.DataSourceMode, fifaCode);
                 if (matches == null || !matches.Any())

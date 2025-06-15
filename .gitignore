@@ -8,6 +8,9 @@
 
 ## settings file
 *.txt
+/WorldCupData/**/.png
+/WorldCupData/**/.jpeg
+/WorldCupData/**/.jpg
 
 # User-specific files
 *.rsuser

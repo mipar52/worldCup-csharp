@@ -41,6 +41,12 @@ namespace WorldCupData.Service
             return Path.Combine(basePath, "worldcup.sfg.io", type.ToString().ToLower(), "favorite.txt");
         }
 
+        public static string GetFavoritesTeamFilePath(ChampionshipType type)
+        {
+            string basePath = FindWorldCupDataBasePath();
+            return Path.Combine(basePath, "worldcup.sfg.io", type.ToString().ToLower(), "favorite_team.txt");
+        }
+
         public static string GetImageMappingFilePath(ChampionshipType type)
         {
             string basePath = FindWorldCupDataBasePath();

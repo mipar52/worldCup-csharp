@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,7 +55,7 @@ namespace WorldCupData.Service
                         break;
                 }
             }
-
+            Debug.WriteLine($"Loaded favorites for team: {teamCode}, Players: {string.Join(", ", players)}");
             return (teamCode, players);
         }
     }
