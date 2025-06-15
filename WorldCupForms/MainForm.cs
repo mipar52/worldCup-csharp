@@ -87,35 +87,7 @@ namespace WorldCupForms
             using var settingsForm = new SettingsForm();
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
-                var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingTeams());
-
-                try
-                {
-                    // Reload teams after settings change
-                    var settingsService = new SettingsService();
-                    settingsService.Load();
-                    ChangeLanguageStrings();
-                    Task.Run(async () =>
-                    {
-                        flpFavoritePlayers.Controls.Clear();
-                        await LoadTeamsAsync();
-
-                        Invoke(() =>
-                        {
-                            loadingPanel.Visible = false;
-                            loadingPanel.Dispose();
-                        });
-                    });
-                    loadingPanel.Visible = false;
-                    loadingPanel.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    loadingPanel.Visible = false;
-                    loadingPanel.Dispose();
-                    MessageBox.Show(LanguageService.ErrLoadingFavTeams(ex.Message), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+                ReloadSettings();
             }
         }
 
