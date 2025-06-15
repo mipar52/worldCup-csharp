@@ -38,6 +38,9 @@
             printDialogRankings = new PrintDialog();
             printDocumentRankings = new System.Drawing.Printing.PrintDocument();
             printPreviewDialog = new PrintPreviewDialog();
+            btnYellowSort = new Button();
+            btnGoalsSort = new Button();
+            btnSortBoth = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvPlayerRanking).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvMatchRanking).BeginInit();
             menuStrip1.SuspendLayout();
@@ -48,7 +51,7 @@
             dgvPlayerRanking.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvPlayerRanking.Location = new Point(12, 27);
             dgvPlayerRanking.Name = "dgvPlayerRanking";
-            dgvPlayerRanking.Size = new Size(579, 505);
+            dgvPlayerRanking.Size = new Size(648, 456);
             dgvPlayerRanking.TabIndex = 0;
             // 
             // dgvMatchRanking
@@ -111,11 +114,44 @@
             printPreviewDialog.Name = "printPreviewDialog";
             printPreviewDialog.Visible = false;
             // 
+            // btnYellowSort
+            // 
+            btnYellowSort.Location = new Point(12, 498);
+            btnYellowSort.Name = "btnYellowSort";
+            btnYellowSort.Size = new Size(172, 34);
+            btnYellowSort.TabIndex = 3;
+            btnYellowSort.Text = "Sort by yellow cards";
+            btnYellowSort.UseVisualStyleBackColor = true;
+            btnYellowSort.Click += btnYellowSort_Click;
+            // 
+            // btnGoalsSort
+            // 
+            btnGoalsSort.Location = new Point(218, 498);
+            btnGoalsSort.Name = "btnGoalsSort";
+            btnGoalsSort.Size = new Size(202, 34);
+            btnGoalsSort.TabIndex = 4;
+            btnGoalsSort.Text = "Sort by goals";
+            btnGoalsSort.UseVisualStyleBackColor = true;
+            btnGoalsSort.Click += btnGoalsSort_Click;
+            // 
+            // btnSortBoth
+            // 
+            btnSortBoth.Location = new Point(459, 498);
+            btnSortBoth.Name = "btnSortBoth";
+            btnSortBoth.Size = new Size(201, 34);
+            btnSortBoth.TabIndex = 5;
+            btnSortBoth.Text = "Sort by both (YC + G)";
+            btnSortBoth.UseVisualStyleBackColor = true;
+            btnSortBoth.Click += btnSortBoth_Click;
+            // 
             // RankingForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1152, 544);
+            Controls.Add(btnSortBoth);
+            Controls.Add(btnGoalsSort);
+            Controls.Add(btnYellowSort);
             Controls.Add(dgvMatchRanking);
             Controls.Add(dgvPlayerRanking);
             Controls.Add(menuStrip1);
@@ -142,5 +178,8 @@
         private System.Drawing.Printing.PrintDocument printDocumentRankings;
         private ToolStripMenuItem printPreviewToolStripMenuItem;
         private PrintPreviewDialog printPreviewDialog;
+        private Button btnYellowSort;
+        private Button btnGoalsSort;
+        private Button btnSortBoth;
     }
 }

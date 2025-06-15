@@ -57,7 +57,7 @@ namespace WorldCupForms
             AppSettings.DataSourceMode = selectedDataSource;
 
             _settingsService.Save();
-
+            
             MessageBox.Show(LanguageService.SaveSuccess(), LanguageService.Success(), MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.DialogResult = DialogResult.OK;
             this.Close();

@@ -22,17 +22,18 @@ namespace WorldCupForms
         private readonly DataSourceMode _mode;
 
         private List<Match> _teamMatches;
+        private List<(StartingEleven Player, int Goals, int YellowCards, int Appearances)> _playerStats;
 
         private PrintDocument printDocument = new PrintDocument();
         private int currentPrintPage = 0;
         private List<string> printLines = new();
 
-        public RankingForm( string code)
+        public RankingForm(string code)
         {
             InitializeComponent();
             _dataProvider = new DataProvider();
             InitializeDataGrids();
-            //loadingPanel.Visible = false;
+
         }
 
         private async void RankingForm_Load(object sender, EventArgs e)
@@ -57,9 +58,11 @@ namespace WorldCupForms
 
                 _teamMatches = matches;
 
-                PopulatePlayerRanking(favoriteTeamCode);
+                CollectPlayerStats(favoriteTeamCode);
+                SortByBoth();
                 PopulateMatchRanking();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading matches: {ex.Message}");
                 MessageBox.Show(LanguageService.ErrorLoadingMatches(ex.Message));
@@ -78,10 +81,10 @@ namespace WorldCupForms
 
         private void InitializeDataGrids()
         {
-            
+
             dgvPlayerRanking.Columns.Clear();
             dgvPlayerRanking.AllowUserToAddRows = false;
-            
+
             dgvPlayerRanking.Columns.Add(new DataGridViewImageColumn { HeaderText = LanguageService.Image(), Name = "Image", Width = 80, ImageLayout = DataGridViewImageCellLayout.Zoom });
             dgvPlayerRanking.Columns.Add("Name", LanguageService.Name());
             dgvPlayerRanking.Columns.Add("Goals", LanguageService.Goals());
@@ -98,10 +101,8 @@ namespace WorldCupForms
 
         }
 
-
-        private void PopulatePlayerRanking(string teamCode)
+        private void CollectPlayerStats(string teamCode)
         {
-            var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingRankings());
             var playerStats = new Dictionary<string, (StartingEleven Player, int Goals, int YellowCards, int Appearances)>();
 
             foreach (var match in _teamMatches)
@@ -115,14 +116,11 @@ namespace WorldCupForms
                         playerStats[player.Name] = (player, 0, 0, 0);
 
                     var tuple = playerStats[player.Name];
-
                     playerStats[player.Name] = (player, tuple.Goals, tuple.YellowCards, tuple.Appearances + 1);
                 }
 
                 foreach (var ev in match.HomeTeamEvents.Concat(match.AwayTeamEvents))
                 {
-
-                    Debug.WriteLine(ev.TypeOfEvent);
                     if (!playerStats.ContainsKey(ev.Player)) continue;
 
                     var tuple = playerStats[ev.Player];
@@ -133,23 +131,22 @@ namespace WorldCupForms
                 }
             }
 
-            var sorted = playerStats.Values
-                .OrderByDescending(x => x.Goals)
-                .ThenByDescending(x => x.YellowCards)
-                .ThenByDescending(x => x.Appearances)
-                .ToList();
-
+            _playerStats = playerStats.Values.ToList();
+        }
+        private void DisplaySortedPlayerStats(IEnumerable<(StartingEleven Player, int Goals, int YellowCards, int Appearances)> sortedStats)
+        {
             dgvPlayerRanking.Rows.Clear();
-            foreach (var entry in sorted)
+
+            foreach (var entry in sortedStats)
             {
                 var img = ImageService.GetPlayerImagePath(AppSettings.Championship, entry.Player.Name);
                 if (img == null || !File.Exists(img))
                 {
                     img = ImageService.GetPlaceholderImagePath(AppSettings.Championship);
                 }
+
                 dgvPlayerRanking.Rows.Add(Image.FromFile(img), entry.Player.Name, entry.Goals, entry.YellowCards, entry.Appearances);
             }
-            loadingPanel.Visible = false;
         }
 
         private void PopulateMatchRanking()
@@ -179,17 +176,23 @@ namespace WorldCupForms
             printLines.Add($"=== {LanguageService.PlayerRankings()} ===");
             printLines.Add($"{LanguageService.Name().PadRight(25)}{LanguageService.Goals(),7}{LanguageService.YellowCards(),10}{LanguageService.Appearances(),7}");
 
-            foreach (DataGridViewRow row in dgvPlayerRanking.Rows)
+            var currentSort = dgvPlayerRanking.Rows
+                .Cast<DataGridViewRow>()
+                .Where(r => !r.IsNewRow)
+                .Select(r => new
+                {
+                    Name = r.Cells[1].Value?.ToString() ?? "",
+                    Goals = int.Parse(r.Cells[2].Value?.ToString() ?? "0"),
+                    Yellows = int.Parse(r.Cells[3].Value?.ToString() ?? "0"),
+                    Apps = int.Parse(r.Cells[4].Value?.ToString() ?? "0")
+                })
+                .ToList();
+
+            foreach (var row in currentSort)
             {
-                if (row.IsNewRow) continue;
-
-                string name = (row.Cells[1].Value?.ToString() ?? "").PadRight(25);  // fixed width
-                string goals = (row.Cells[2].Value?.ToString() ?? "0").PadLeft(7);
-                string yellows = (row.Cells[3].Value?.ToString() ?? "0").PadLeft(10);
-                string apps = (row.Cells[4].Value?.ToString() ?? "0").PadLeft(7);
-
-                printLines.Add($"{name}{goals}{yellows}{apps}");
+                printLines.Add($"{row.Name.PadRight(25)}{row.Goals.ToString().PadLeft(7)}{row.Yellows.ToString().PadLeft(10)}{row.Apps.ToString().PadLeft(7)}");
             }
+
 
             printLines.Add("");
             printLines.Add("=== MATCH RANKINGS ===");
@@ -304,6 +307,45 @@ namespace WorldCupForms
 
             currentPrintPage = 0;
             printPreviewDialog.ShowDialog();
+        }
+        private void SortByGoals()
+        {
+            var sorted = _playerStats
+                .OrderByDescending(x => x.Goals)
+                .ThenByDescending(x => x.Appearances);
+            DisplaySortedPlayerStats(sorted);
+        }
+
+        private void SortByYellowCards()
+        {
+            var sorted = _playerStats
+                .OrderByDescending(x => x.YellowCards)
+                .ThenByDescending(x => x.Appearances);
+            DisplaySortedPlayerStats(sorted);
+        }
+
+        private void SortByBoth()
+        {
+            var sorted = _playerStats
+                .OrderByDescending(x => x.Goals)
+                .ThenByDescending(x => x.YellowCards)
+                .ThenByDescending(x => x.Appearances);
+            DisplaySortedPlayerStats(sorted);
+        }
+
+        private void btnGoalsSort_Click(object sender, EventArgs e)
+        {
+            SortByGoals();
+        }
+
+        private void btnYellowSort_Click(object sender, EventArgs e)
+        {
+            SortByYellowCards();
+        }
+
+        private void btnSortBoth_Click(object sender, EventArgs e)
+        {
+            SortByBoth();
         }
     }
 }

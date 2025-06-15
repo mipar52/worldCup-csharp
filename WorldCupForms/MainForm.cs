@@ -8,6 +8,7 @@ using WorldCupData.Model;
 using System.Diagnostics;
 using CustomControls;
 using WorldCupForms.UIUtils;
+using System.Threading.Tasks;
 
 namespace WorldCupForms
 {
@@ -86,7 +87,35 @@ namespace WorldCupForms
             using var settingsForm = new SettingsForm();
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
-                ChangeLanguageStrings();
+                var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingTeams());
+
+                try
+                {
+                    // Reload teams after settings change
+                    var settingsService = new SettingsService();
+                    settingsService.Load();
+                    ChangeLanguageStrings();
+                    Task.Run(async () =>
+                    {
+                        flpFavoritePlayers.Controls.Clear();
+                        await LoadTeamsAsync();
+
+                        Invoke(() =>
+                        {
+                            loadingPanel.Visible = false;
+                            loadingPanel.Dispose();
+                        });
+                    });
+                    loadingPanel.Visible = false;
+                    loadingPanel.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    loadingPanel.Visible = false;
+                    loadingPanel.Dispose();
+                    MessageBox.Show(LanguageService.ErrLoadingFavTeams(ex.Message), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
         }
 
@@ -95,15 +124,6 @@ namespace WorldCupForms
             MessageBox.Show(LanguageService.AppInfo(), LanguageService.About(), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void printToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // TODO
-        }
-
-        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // TODO
-        }
         private void ChangeLanguageStrings()
         {
             this.Text = LanguageService.MainFormTitle();
@@ -162,7 +182,6 @@ namespace WorldCupForms
             if (cbFavoriteTeam.SelectedItem is not string selectedText) return;
             var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingFavPlayers());
             var fifaCode = selectedText.Substring(selectedText.LastIndexOf('(') + 1).TrimEnd(')');
-         //   File.WriteAllText(PathHelper.GetFavoritesFilePath(AppSettings.Championship), fifaCode);
             await LoadFavoritePlayersAsync(fifaCode);
             loadingPanel.Visible = false;
             loadingPanel.Dispose();
@@ -334,7 +353,32 @@ namespace WorldCupForms
             using var settingsForm = new SettingsForm();
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
+                ReloadSettings();
+            }
+        }
+
+        async void ReloadSettings()
+        {
+            var loadingPanel = LoadingPanelUtils.ShowLoadingPanel(this, LanguageService.LoadingTeams());
+            try
+            {
                 ChangeLanguageStrings();
+                var settingsService = new SettingsService();
+                settingsService.Load();
+
+                cbFavoriteTeam.Items.Clear();
+                flpFavoritePlayers.Controls.Clear();
+
+                await LoadTeamsAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(LanguageService.ErrLoadingFavTeams(ex.Message), LanguageService.Warning(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                loadingPanel.Visible = false;
+                loadingPanel.Dispose();
             }
         }
 
